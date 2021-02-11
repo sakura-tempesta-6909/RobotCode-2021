@@ -133,7 +133,7 @@ public class Arm {
      * */
     void armStop(double nowAngle) {
         Motor.set(ControlMode.PercentOutput, 0,
-                DemandType.ArbitraryFeedForward, setFeedForward(nowAngle));
+                DemandType.ArbitraryFeedForward, Util.setFeedForward(nowAngle));
         SmartDashboard.putNumber("Stop", nowAngle);
     }
 
@@ -148,7 +148,7 @@ public class Arm {
      */
     void armPIDMove(double targetAngle, double nowAngle) {
         Motor.set(ControlMode.Position, setPoint(targetAngle),
-                DemandType.ArbitraryFeedForward, setFeedForward(nowAngle));
+                DemandType.ArbitraryFeedForward, Util.setFeedForward(nowAngle));
     }
 
     /**
@@ -197,17 +197,6 @@ public class Arm {
                 Const.armAngleDifference + Const.armMinPoint;
     }
 
-    /** 
-     * 目標角度に合わせた重力オフセットを計算.
-     * 
-     * <p> (地面と水平な時の重力オフセット) * (cos現在角度)
-     * 
-     * @param nowAngle 現在の角度
-     */
-    public double setFeedForward(double nowAngle) {
-        return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
-    }
-
     //砲台を指定した角度まで台形制御で動かす
     /** armAccelTime（等速で動いている時間）の計算.
      * @param distance 現在のアームの角度と目標角度の差（上方向の場合+、下方向の場合－）
@@ -236,14 +225,13 @@ public class Arm {
         }
         return constTime;
     }
-    /** PID制御 */
 
-
-    /** 重力分追加 */
-
-
-    /** アーム動かす */
-
+    /** 
+     * 台形制御、PID制御
+     * 
+     * @param finalTargetAngle 最終的な目標角度
+     * @param nowAngle 現在の角度（エンコーダからの値）
+     */
     void armPIDControl(double finalTargetAngle, double nowAngle) {
         armPIDPower = (finalTargetAngle - nowAngle) * 0;// P制御
         if(Math.abs(finalTargetAngle - nowAngle) > Const.Acceleration) {
@@ -257,7 +245,7 @@ public class Arm {
         else {
             armTargetAngle = finalTargetAngle;
         }
-        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + setFeedForward(nowAngle);
+        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + Util.setFeedForward(nowAngle);
         armMove(armOutput);
     }
 }
