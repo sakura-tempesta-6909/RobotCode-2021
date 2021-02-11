@@ -84,7 +84,7 @@ public class Const {
 
     //以下立崎追記分（完成したら整理します）
     public static final double ArmFullSpeedTime = 5;//最大速度になるまでにかかる時間
-    public static final double ArmMaxSpeed = 0.1;
+    public static final double ArmMaxSpeed = 0.05;
     public static final double ArmConAng = Const.ArmFullSpeedTime * Const.ArmMaxSpeed;//台形加速実施角度（標準）
     public static final double Acceleration = 0.1;
 

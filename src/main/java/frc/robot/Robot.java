@@ -381,8 +381,8 @@ public class Robot extends TimedRobot {
                 } else if (operator.getBButton()) {
                     //O B 60度に角度調整//
                     state.armState = State.ArmState.k_ConstAng;
-                    state.armSetAngle = 60; //後で変更予定
-                    state.armFinalTargetAngle = 60;
+                    state.armSetAngle = 35; //後で変更予定
+                    state.armFinalTargetAngle = 35;
                 }
                     /*if(Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kRight))&&Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kLeft))){
                         state.intakeBeltState = State.IntakeBeltState.kouttake;

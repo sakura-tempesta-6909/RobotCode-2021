@@ -22,7 +22,7 @@ public class Arm {
 
     double armAccelTime; //未使用
     double armConstTime; //未使用
-    double armTargetAngle;
+    double armTargetAngle = 0;
     double armPIDPower;
     double armOutput;
 
@@ -244,13 +244,14 @@ public class Arm {
      * @param nowAngle 現在の角度（エンコーダからの値）
      */
     void armPIDControl(double finalTargetAngle, double nowAngle) {
-        armPIDPower = (finalTargetAngle - nowAngle) * 0;// P制御
+        // P制御
+        armPIDPower = (finalTargetAngle - nowAngle) * 0;
         if(Math.abs(finalTargetAngle - nowAngle) > Const.Acceleration) {
             if(finalTargetAngle - nowAngle > 0) {
-                armTargetAngle = armTargetAngle + Const.Acceleration;
+                armTargetAngle = nowAngle + Const.Acceleration;
             }
             else {
-                armTargetAngle = armTargetAngle - Const.Acceleration;
+                armTargetAngle = nowAngle - Const.Acceleration;
             }
         }
         else {
