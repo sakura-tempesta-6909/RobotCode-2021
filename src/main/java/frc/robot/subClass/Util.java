@@ -28,7 +28,7 @@ public class Util {
      * 
      * @param nowAngle 現在の角度
      */
-    public static double setFeedForward(double nowAngle) {
+    public static double getFeedForward(double nowAngle) {
         return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
     }
 

@@ -133,7 +133,7 @@ public class Arm {
      * */
     void armStop(double nowAngle) {
         Motor.set(ControlMode.PercentOutput, 0,
-                DemandType.ArbitraryFeedForward, Util.setFeedForward(nowAngle));
+                DemandType.ArbitraryFeedForward, Util.getFeedForward(nowAngle));
         SmartDashboard.putNumber("Stop", nowAngle);
     }
 
@@ -148,7 +148,7 @@ public class Arm {
      */
     void armPIDMove(double targetAngle, double nowAngle) {
         Motor.set(ControlMode.Position, setPoint(targetAngle),
-                DemandType.ArbitraryFeedForward, Util.setFeedForward(nowAngle));
+                DemandType.ArbitraryFeedForward, Util.getFeedForward(nowAngle));
     }
 
     /**
@@ -245,7 +245,7 @@ public class Arm {
         else {
             armTargetAngle = finalTargetAngle;
         }
-        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + Util.setFeedForward(nowAngle);
+        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + Util.getFeedForward(nowAngle);
         armMove(armOutput);
     }
 }
