@@ -67,11 +67,13 @@ public class Arm {
                 break;
             // 維持する
             case k_Conserve:
-                armStop(state.armAngle);
+                //armStop(state.armAngle);
+                armPIDControl(state.armAngle, state.armAngle);
                 break;
             //指定した角度
             case k_ConstAng:
                 armPIDControl(state.armFinalTargetAngle, state.armAngle);
+                //armPIDControl(state.armAngle, state.armAngle);
                 //state.DisAng = state.armSetAngle - state.armAngle;
                 //armAccelTime = accelTime(state.DisAng);
                 //armConstTime = constTime(state.DisAng);
@@ -245,13 +247,13 @@ public class Arm {
      */
     void armPIDControl(double finalTargetAngle, double nowAngle) {
         // P制御
-        armPIDPower = (finalTargetAngle - nowAngle) * 0;
+        armPIDPower = (armTargetAngle - nowAngle) * 0;
         if(Math.abs(finalTargetAngle - nowAngle) > Const.Acceleration) {
             if(finalTargetAngle - nowAngle > 0) {
-                armTargetAngle = nowAngle + Const.Acceleration;
+                armTargetAngle = armTargetAngle + Const.Acceleration;
             }
             else {
-                armTargetAngle = nowAngle - Const.Acceleration;
+                armTargetAngle = armTargetAngle - Const.Acceleration;
             }
         }
         else {
@@ -259,5 +261,6 @@ public class Arm {
         }
         armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + setFeedForward(nowAngle);
         armMove(armOutput);
+        System.out.println(armOutput);
     }
 }
