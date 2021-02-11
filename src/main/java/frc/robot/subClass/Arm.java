@@ -256,7 +256,7 @@ public class Arm {
         else {
             armTargetAngle = finalTargetAngle;
         }
-        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + setFeedforward(nowAngle);
+        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + setFeedForward(nowAngle);
         armMove(armOutput);
     }
 }
