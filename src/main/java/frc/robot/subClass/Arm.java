@@ -236,7 +236,7 @@ public class Arm {
         }
         return constTime;
     }
-    
+
     /** 
      * 台形制御、PID制御
      * 
@@ -256,7 +256,7 @@ public class Arm {
         else {
             armTargetAngle = finalTargetAngle;
         }
-        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + SetFeedForward(nowAngle);
-        ArmMove(armOutput);
+        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + setFeedforward(nowAngle);
+        armMove(armOutput);
     }
 }
