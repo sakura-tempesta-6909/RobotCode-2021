@@ -36,10 +36,14 @@ public class State {
     public ControlMode controlMode = ControlMode.m_Drive;
 
     //ボールを5個ゲットしたか
-    public boolean is_IntakeFull;
+    public boolean is_intakeFull;
+    // m_Drive時、インテイクを回すモードにしているかどうか
+    public boolean is_intakeRollInDrive = true;
 
     public State() {
         stateInit();
+        controlMode = ControlMode.m_Drive;
+        is_intakeRollInDrive = true;
     }
 
     public void stateInit() {
@@ -59,7 +63,7 @@ public class State {
 
         //Intake
         intakeState = IntakeState.doNothing;
-        is_IntakeFull = false;
+        is_intakeFull = false;
 
         //IntakeBeltState
         intakeBeltState = IntakeBeltState.doNothing;

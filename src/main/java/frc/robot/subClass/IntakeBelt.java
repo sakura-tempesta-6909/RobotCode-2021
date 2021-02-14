@@ -52,7 +52,7 @@ public class IntakeBelt {
             if (is_BallBack()) {
                 //前後にボールあれば満タン
                 setSpeed(0, 0);
-                state.is_IntakeFull = true;
+                state.is_intakeFull = true;
                 System.out.println("   Intake Fulllllll   ");
                 return;
             }
