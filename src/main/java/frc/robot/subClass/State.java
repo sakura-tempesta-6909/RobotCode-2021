@@ -24,7 +24,6 @@ public class State {
     public double targetAngle;
     public double armTargetAngle;
     
-    
     //SubClass State
     public DriveState driveState;
     public ArmState armState;
@@ -78,6 +77,7 @@ public class State {
         armMotorSpeed = 0;
         armSetAngle = Const.armMinAngle;
         armAngle = 0;
+        armTargetAngle = 0;
 
         //panel
         panelState = PanelState.p_DoNothing;
@@ -141,7 +141,7 @@ public class State {
         k_Basic,
         k_Manual,
         k_ConstAng,
-        k_DoNothing
+        k_DoNothing,
     }
 
     public enum PanelState {

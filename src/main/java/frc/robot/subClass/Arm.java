@@ -140,7 +140,7 @@ public class Arm {
     /** 
      * 砲台のモーターを回すPID制御.
      * 
-     * <p> エンコーダー目標値は{@code Util.SetPoint()}で決める <br>
+     * <p> エンコーダー目標値は{@code Util.angleToPoint()}で決める <br>
      * <p> 重力オフセットは{@code Util.getFeedForward()}で決める
      * 
      * @param targetAngle 目標角度
