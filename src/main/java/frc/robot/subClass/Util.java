@@ -35,11 +35,11 @@ public class Util {
     }
 
     /** 
-     * 目標角度に合わせたPIDの目標値を計算.
+     * 角度をエンコーダの値(point)に変換.
      * 
-     * <p> (角度の目標値最小値差分) *（エンコーダー値の最大最小差分) / (角度の最大最小差分) + (最小値からの差分)
+     * @param angle 角度(度数法)[-30, 80]
      * 
-     * @param angle 角度の目標値
+     * @return point エンコーダの値[160付近, 500付近]
      */
     public static double angleToPoint(double angle) {
         return (angle - Const.armMinAngle) * Const.armPointDifference /
