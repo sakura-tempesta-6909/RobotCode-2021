@@ -29,4 +29,22 @@ public class Util {
     public static double getFeedForward(double nowAngle) {
         return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
     }
+
+    public static double pointToAngle(double point) {
+        return  (point - Const.armMinPoint) * Const.armAngleDifference / Const.armPointDifference + Const.armMinAngle;
+    }
+
+    /** 
+     * 目標角度に合わせたPIDの目標値を計算.
+     * 
+     * <p> (角度の目標値最小値差分) *（エンコーダー値の最大最小差分) / (角度の最大最小差分) + (最小値からの差分)
+     * 
+     * @param angle 角度の目標値
+     */
+    public static double angleToPoint(double angle) {
+        return (angle - Const.armMinAngle) * Const.armPointDifference /
+                Const.armAngleDifference + Const.armMinPoint;
+    }
+
+    
 }

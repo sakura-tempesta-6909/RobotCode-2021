@@ -140,14 +140,14 @@ public class Arm {
     /** 
      * 砲台のモーターを回すPID制御.
      * 
-     * <p> エンコーダー目標値は{@code SetPoint()}で決める <br>
+     * <p> エンコーダー目標値は{@code Util.angleToPoint()}で決める <br>
      * <p> 重力オフセットは{@code Util.getFeedForward()}で決める
      * 
      * @param targetAngle 目標角度
      * @param nowAngle 現在の角度
      */
     void armPIDMove(double targetAngle, double nowAngle) {
-        Motor.set(ControlMode.Position, setPoint(targetAngle),
+        Motor.set(ControlMode.Position, Util.angleToPoint(targetAngle),
                 DemandType.ArbitraryFeedForward, Util.getFeedForward(nowAngle));
     }
 
@@ -183,18 +183,6 @@ public class Arm {
     public double getArmNow() {
         return Const.armAngleDifference / Const.armPointDifference *
                 (Encoder.getAnalogInRaw() - Const.armMinPoint) + Const.armMinAngle;
-    }
-
-    /** 
-     * 目標角度に合わせたPIDの目標値を計算.
-     * 
-     * <p> (角度の目標値最小値差分) *（エンコーダー値の最大最小差分) / (角度の最大最小差分) + (最小値からの差分)
-     * 
-     * @param targetAngle 角度の目標値
-     */
-    double setPoint(double targetAngle) {
-        return (targetAngle - Const.armMinAngle) * Const.armPointDifference /
-                Const.armAngleDifference + Const.armMinPoint;
     }
 
     /** 
