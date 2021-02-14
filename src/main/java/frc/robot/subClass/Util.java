@@ -19,4 +19,14 @@ public class Util {
         SmartDashboard.putString(key, text);
     }
 
+    /** 
+     * 目標角度に合わせた重力オフセットを計算.
+     * 
+     * <p> (地面と水平な時の重力オフセット) * (cos現在角度)
+     * 
+     * @param nowAngle 現在の角度
+     */
+    public static double getFeedForward(double nowAngle) {
+        return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
+    }
 }
