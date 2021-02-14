@@ -81,8 +81,4 @@ public class SendJson {
     private void outputStatus(String text) {
         SmartDashboard.putString("SendJsonStatus", text);
     }
-
-    private void outputResult(String text) {
-        SmartDashboard.putString("SendjsonResult", text);
-    }
 }
