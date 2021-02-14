@@ -197,7 +197,7 @@ public class Robot extends TimedRobot {
 
         //モードのクラスの生成
         panelRotationMode = new PanelRotationMode(colorSensorServo);
-        climbMode = new ClimbMode(climbMotor, climbServo, slideMotor);
+        climbMode = new ClimbMode(arm, climbMotor, climbServo, slideMotor);
     }
 
     @Override
@@ -351,26 +351,10 @@ public class Robot extends TimedRobot {
                     //O LStick Y 砲台の角度を手動で調節, 正か負のみ
                     state.armState = State.ArmState.k_Adjust;
                     state.armMotorSpeed = -operator.getY(GenericHID.Hand.kLeft);
-<<<<<<< HEAD
-                } 
+                }
                     /*if(Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kRight))&&Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kLeft))){
                         state.intakeBeltState = State.IntakeBeltState.kouttake;
                     }*/
-=======
-                } else if (operator.getBButton()) {
-                    //O B 60度に角度調整//
-                    state.armState = State.ArmState.k_ConstAng;
-                    state.armSetAngle = 60; //後で変更予定
-                    state.armFinalTargetAngle = 60;
-                }
-
-                /*
-                * if(Util.deadandCheck(operator.getTriggerAxis(GenericHID.Hand.kRight))&&Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kLeft))){
-                * state.intakeBeltState = State.IntakeBeltState.kouttake;
-                * }
-                */
-
->>>>>>> e87832254dacea06429288d8f63e23f9309b24e8
                 break;
 
             case m_Climb:

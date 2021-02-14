@@ -20,7 +20,7 @@ public class Arm {
     /** アームセンサー */
     ArmSensor armSensor;
 
-    public double armTargetChange = -30;
+    double armTargetChange = -30;
     double armDControl;
     double armOutput;
     double armTargetAngleOld;
@@ -127,7 +127,7 @@ public class Arm {
     /** 
      * 重力オフセットを使う事でアームを停止させる.
      * 
-     * <p> 出力の値は{@code SetFeedForward()}で決める
+     * <p> 出力の値は{@code Util.getFeedForward()}で決める
      * 
      * @param nowAngle 現在の角度
      * */
@@ -141,7 +141,7 @@ public class Arm {
      * 砲台のモーターを回すPID制御.
      * 
      * <p> エンコーダー目標値は{@code SetPoint()}で決める <br>
-     * <p> 重力オフセットは{@code SetFeedForward()}で決める
+     * <p> 重力オフセットは{@code Util.getFeedForward()}で決める
      * 
      * @param targetAngle 目標角度
      * @param nowAngle 現在の角度
@@ -198,17 +198,6 @@ public class Arm {
     }
 
     /** 
-     * 目標角度に合わせた重力オフセットを計算.
-     * 
-     * <p> (地面と水平な時の重力オフセット) * (cos現在角度)
-     * 
-     * @param nowAngle 現在の角度
-     */
-    public double setFeedForward(double nowAngle) {
-        return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
-    }
-
-    /** 
      * 台形制御、PID制御
      * 
      * @param finalTargetAngle 最終的な目標角度
@@ -231,12 +220,12 @@ public class Arm {
         // D制御
         armDControl = (targetAngle + armTargetChange - nowAngle) * (targetAngle - nowAngle) * 0.001;
         // 出力
-        armOutput = (targetAngle + armTargetChange - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armDControl + setFeedForward(nowAngle);
+        armOutput = (targetAngle + armTargetChange - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armDControl + Util.getFeedForward(nowAngle);
         if(targetAngle + armTargetChange - nowAngle > 0.15) {
-            armOutput = Const.ArmMaxSpeed + armDControl + setFeedForward(nowAngle);
+            armOutput = Const.ArmMaxSpeed + armDControl + Util.getFeedForward(nowAngle);
         }
         else if(targetAngle + armTargetChange - nowAngle < -0.15) {
-            armOutput = -Const.ArmMaxSpeed + armDControl + setFeedForward(nowAngle);
+            armOutput = -Const.ArmMaxSpeed + armDControl + Util.getFeedForward(nowAngle);
         }
         armMove(armOutput);
         System.out.println(armOutput);
