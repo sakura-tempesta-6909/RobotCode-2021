@@ -26,10 +26,14 @@ public class IntakeBelt {
             case kOuttake:
                 System.out.println("leftSpeedaaa" + state.shooterLeftMotorSpeed);
                 System.out.println("RightSpeedaaa" + state.shooterRightMotorSpeed);
-                if (state.shooterLeftMotorSpeed < -100000 && state.shooterRightMotorSpeed > 100000) {
-                    outtake();
+                if(state.controlMode == State.ControlMode.m_ShootingBall) {
+                    if (state.shooterLeftMotorSpeed < -100000 && state.shooterRightMotorSpeed > 100000) {
+                        outtake();
+                    } else {
+                        setSpeed(0, 0);
+                    }
                 } else {
-                    setSpeed(0, 0);
+                    outtake();
                 }
                 break;
             case doNothing:
