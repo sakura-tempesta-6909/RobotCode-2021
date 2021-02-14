@@ -38,6 +38,12 @@ public class IntakeBelt {
         }
     }
 
+    /**
+     * ベルトを動かす
+     * 
+     * @param frontSpeed 前のベルトのスピード(PercentOutput)[-1, 1]
+     * @param backSpeed 後ろのベルトのスピード(PercentOutput)[-1, 1]
+     */
     private void setSpeed(double frontSpeed, double backSpeed) {
         intakeBeltFront.set(ControlMode.PercentOutput, frontSpeed);
         intakeBeltBack.set(ControlMode.PercentOutput, backSpeed);

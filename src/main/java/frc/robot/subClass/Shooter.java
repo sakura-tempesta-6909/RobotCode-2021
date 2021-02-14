@@ -33,6 +33,12 @@ public class Shooter {
         }
     }
 
+    /**
+     * シューターを動かす
+     * 
+     * @param leftSpeed 左のシューターのスピード。正で取り込む方向。単位、範囲不明
+     * @param rightSpeed 右のシューターのスピード。負で取り込む方向。単位、範囲不明
+     */
     public void setSpeed(double leftSpeed, double rightSpeed) {
         double targetLeftVelocity_UnitsPer100ms = leftSpeed * Const.shooterMotorMaxOutput;
         double targetRightVelocity_UnitsPer100ms = rightSpeed * Const.shooterMotorMaxOutput;
@@ -40,22 +46,15 @@ public class Shooter {
         shooterRight.set(ControlMode.Velocity, targetRightVelocity_UnitsPer100ms);
     }
 
+    /**
+     * シューターを動かす
+     * 
+     * @param speedPercentLeft 左のシューターのスピード。正で取り込む方向。(PercentOutput)[-1, 1]
+     * @param speedPercentRight 右のシューターのスピード。負で取り込む方向。(PercentOutput)[-1, 1]
+     */
     public void setSpeedPercent(double speedPercentLeft, double speedPercentRight) {
-        //Rは正で出す
         shooterLeft.set(ControlMode.PercentOutput, speedPercentLeft);
         shooterRight.set(ControlMode.PercentOutput, speedPercentRight);
 
-    }
-
-    public double getMotorSpeed() {
-        return shooterLeft.getSensorCollection().getAnalogInRaw() / 1023.0;
-    }
-
-    public double getMotorSpeed(boolean getRight) {
-        if (getRight) {
-            return shooterRight.getSensorCollection().getAnalogInRaw() / 1023.0;
-        } else {
-            return shooterLeft.getSensorCollection().getAnalogInRaw() / 1023.0;
-        }
     }
 }

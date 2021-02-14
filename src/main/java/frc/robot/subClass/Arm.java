@@ -117,7 +117,7 @@ public class Arm {
     /** 
      * 砲台のモーターを回す.
      * 
-     * @param setSpeed 回す速さ
+     * @param setSpeed 回す速さ(PercentOutput)[-1, 1]
      */
     void armMove(double setSpeed) {
         Motor.set(ControlMode.PercentOutput, setSpeed);
@@ -129,7 +129,7 @@ public class Arm {
      * 
      * <p> 出力の値は{@code Util.getFeedForward()}で決める
      * 
-     * @param nowAngle 現在の角度
+     * @param nowAngle 現在の角度(度数法)[-30, 80]
      * */
     void armStop(double nowAngle) {
         Motor.set(ControlMode.PercentOutput, 0,
@@ -143,8 +143,8 @@ public class Arm {
      * <p> エンコーダー目標値は{@code Util.angleToPoint()}で決める <br>
      * <p> 重力オフセットは{@code Util.getFeedForward()}で決める
      * 
-     * @param targetAngle 目標角度
-     * @param nowAngle 現在の角度
+     * @param targetAngle 目標角度 (度数法)[-30, 80]
+     * @param nowAngle 現在の角度 (度数法)[-30, 80]
      */
     void armPIDMove(double targetAngle, double nowAngle) {
         Motor.set(ControlMode.Position, Util.angleToPoint(targetAngle),
@@ -154,7 +154,7 @@ public class Arm {
     /**
      * 砲台をゆっくり下ろす.  
      * 
-     * @param nowAngle 現在角度。この角度によって入力速度を変化させる
+     * @param nowAngle 現在角度。この角度によって入力速度を変化させる。(度数法)[-30, 80]
      */   
     void armChangeBasic(double nowAngle) {
         if (!armSensor.getArmFrontSensor()) {
@@ -179,6 +179,8 @@ public class Arm {
      * 現在の砲台の角度を計算.
      * 
      * <p> (角度の最大最小差分) /（エンコーダー値の最大最小差分) * (エンコーダーの現在値最小値差分) + (角度の最小値)
+     * 
+     * @return nowAngle 現在の角度(度数法)[-30, 80]
      */
     public double getArmNow() {
         return Const.armAngleDifference / Const.armPointDifference *
