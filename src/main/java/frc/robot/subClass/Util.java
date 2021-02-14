@@ -29,13 +29,4 @@ public class Util {
     public static double getFeedForward(double nowAngle) {
         return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
     }
-
-    public enum ColorCode {
-        yellow,
-        red,
-        green,
-        blue,
-        inRange,
-        outOfRange
-    }
 }
