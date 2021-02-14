@@ -87,6 +87,7 @@ public class Const {
     public static final double ArmMaxSpeed = 0.2;
     public static final double ArmConAng = Const.ArmFullSpeedTime * Const.ArmMaxSpeed;//台形加速実施角度（標準）
     public static final double Acceleration = 0.1;
+    public static final double ArmPGain = 0.1;
 
 
     //目標角度
