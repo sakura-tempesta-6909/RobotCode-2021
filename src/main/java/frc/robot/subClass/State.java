@@ -21,6 +21,9 @@ public class State {
     public double armSetAngle;
     public double DisAng;
     public double armFinalTargetAngle;
+    public double targetAngle;
+    public double armTargetAngle;
+    
     
     //SubClass State
     public DriveState driveState;
