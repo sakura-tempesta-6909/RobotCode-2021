@@ -20,11 +20,10 @@ public class Arm {
     /** アームセンサー */
     ArmSensor armSensor;
 
-    double armAccelTime; //未使用
-    double armConstTime; //未使用
-    double armTargetAngle;
-    double armPIDPower;
+    double armTargetChange = -30;
+    double armDControl;
     double armOutput;
+    double armTargetAngleOld;
 
 
     /** コンストラクター
@@ -68,13 +67,14 @@ public class Arm {
             // 維持する
             case k_Conserve:
                 armStop(state.armAngle);
+                //armPIDControl(state.armAngle, state.armAngle);
+                //armTargetChange = state.armAngle;
                 break;
             //指定した角度
             case k_ConstAng:
-                armPIDControl(state.armFinalTargetAngle, state.armAngle);
-                //state.DisAng = state.armSetAngle - state.armAngle;
-                //armAccelTime = accelTime(state.DisAng);
-                //armConstTime = constTime(state.DisAng);
+                armPIDControl(state.armFinalTargetAngle, state.armAngle, state.armTargetAngle);
+                state.armTargetAngle = state.armTargetAngle + armTargetChange;
+                //armPIDControl(state.armAngle, state.armAngle);
                 break;
             //何もしない
             case k_DoNothing:
@@ -127,7 +127,7 @@ public class Arm {
     /** 
      * 重力オフセットを使う事でアームを停止させる.
      * 
-     * <p> 出力の値は{@code SetFeedForward()}で決める
+     * <p> 出力の値は{@code Util.getFeedForward()}で決める
      * 
      * @param nowAngle 現在の角度
      * */
@@ -141,7 +141,7 @@ public class Arm {
      * 砲台のモーターを回すPID制御.
      * 
      * <p> エンコーダー目標値は{@code SetPoint()}で決める <br>
-     * <p> 重力オフセットは{@code SetFeedForward()}で決める
+     * <p> 重力オフセットは{@code Util.getFeedForward()}で決める
      * 
      * @param targetAngle 目標角度
      * @param nowAngle 現在の角度
@@ -197,55 +197,38 @@ public class Arm {
                 Const.armAngleDifference + Const.armMinPoint;
     }
 
-    //砲台を指定した角度まで台形制御で動かす
-    /** armAccelTime（等速で動いている時間）の計算.
-     * @param distance 現在のアームの角度と目標角度の差（上方向の場合+、下方向の場合－）
-     */
-    double accelTime(double distance) {
-        double accelTime;
-        if(Math.abs(distance) < Const.ArmConAng) {
-            accelTime = Const.ArmFullSpeedTime * (Math.abs(distance) / Const.ArmFullSpeedTime / Const.ArmMaxSpeed);
-        }
-        else {
-            accelTime = Const.ArmFullSpeedTime;
-        }
-        return accelTime;
-    }
-    
-    /** armConstTime（等速で動いている時間）の計算.
-     * @param distance 現在のアームの角度と目標角度の差（上方向の場合+、下方向の場合－）
-     */
-    double constTime(double distance) {
-        double constTime;
-        if(Math.abs(distance) < Const.ArmConAng) {
-            constTime = 0;
-        }
-        else {
-            constTime = (Math.abs(distance) - Const.ArmFullSpeedTime * Const.ArmMaxSpeed) / Const.ArmMaxSpeed;
-        }
-        return constTime;
-    }
-
     /** 
      * 台形制御、PID制御
      * 
      * @param finalTargetAngle 最終的な目標角度
      * @param nowAngle 現在の角度（エンコーダからの値）
      */
-    void armPIDControl(double finalTargetAngle, double nowAngle) {
-        armPIDPower = (finalTargetAngle - nowAngle) * 0;// P制御
-        if(Math.abs(finalTargetAngle - nowAngle) > Const.Acceleration) {
-            if(finalTargetAngle - nowAngle > 0) {
-                armTargetAngle = armTargetAngle + Const.Acceleration;
+    void armPIDControl(double finalTargetAngle, double nowAngle, double targetAngle) {
+        armTargetAngleOld = targetAngle;
+        // 台形制御
+        if(Math.abs(finalTargetAngle - targetAngle) > Const.Acceleration) {
+            if(finalTargetAngle - targetAngle > 0) {
+                armTargetChange = Const.Acceleration;
             }
             else {
-                armTargetAngle = armTargetAngle - Const.Acceleration;
+                armTargetChange = - Const.Acceleration;
             }
         }
         else {
-            armTargetAngle = finalTargetAngle;
+            armTargetChange = finalTargetAngle - targetAngle;
         }
-        armOutput = (armTargetAngle - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armPIDPower + Util.getFeedForward(nowAngle);
+        // D制御
+        armDControl = (targetAngle + armTargetChange - nowAngle) * (targetAngle - nowAngle) * 0.001;
+        // 出力
+        armOutput = (targetAngle + armTargetChange - nowAngle) / Const.Acceleration * Const.ArmMaxSpeed + armDControl + Util.getFeedForward(nowAngle);
+        if(targetAngle + armTargetChange - nowAngle > 0.15) {
+            armOutput = Const.ArmMaxSpeed + armDControl + Util.getFeedForward(nowAngle);
+        }
+        else if(targetAngle + armTargetChange - nowAngle < -0.15) {
+            armOutput = -Const.ArmMaxSpeed + armDControl + Util.getFeedForward(nowAngle);
+        }
         armMove(armOutput);
+        System.out.println(armOutput);
+        System.out.println(nowAngle);
     }
 }
