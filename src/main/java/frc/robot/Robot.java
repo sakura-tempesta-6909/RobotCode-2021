@@ -197,7 +197,7 @@ public class Robot extends TimedRobot {
 
         //モードのクラスの生成
         panelRotationMode = new PanelRotationMode(colorSensorServo);
-        climbMode = new ClimbMode(arm, climbMotor, climbServo, slideMotor);
+        climbMode = new ClimbMode(climbMotor, climbServo, slideMotor);
     }
 
     @Override
