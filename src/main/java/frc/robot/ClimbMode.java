@@ -4,13 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Servo;
-import frc.robot.subClass.Arm;
-import frc.robot.subClass.Const;
-import frc.robot.subClass.OriginalTimer;
-import frc.robot.subClass.State;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subClass.*;
 
 public class ClimbMode {
-    Arm arm;
 
     //クライム用のモーター&エンコーダー
     private TalonSRX climbMotor;
@@ -21,7 +18,7 @@ public class ClimbMode {
 
     private int n_extendReverse;
 
-    ClimbMode(Arm arm, TalonSRX climbMotor, Servo climbServo, TalonSRX climbSlideMotor) {
+    ClimbMode(TalonSRX climbMotor, Servo climbServo, TalonSRX climbSlideMotor) {
         this.climbMotor = climbMotor;
         this.climbServo = climbServo;
         this.slideMotor = climbSlideMotor;
@@ -55,8 +52,6 @@ public class ClimbMode {
         (speed) -> {
             return OriginalTimer.createArgs(speed.get(0));
         });
-
-        this.arm = arm;
 
         climbMotor.setNeutralMode(NeutralMode.Brake);
     }
@@ -113,7 +108,7 @@ public class ClimbMode {
         } else {
             // Arｍ機構と合うようにスピードを調整
             state.armState = State.ArmState.k_Adjust;
-            state.armMotorSpeed = arm.SetFeedForward(armAngle) + Const.climbArmExtendSpeed + state.climbExtendAdjustSpeed;
+            state.armMotorSpeed = Util.getFeedForward(armAngle) + Const.climbArmExtendSpeed + state.climbExtendAdjustSpeed;
             System.out.println("armMotorSpeed" + state.armMotorSpeed);
         }
             /*
