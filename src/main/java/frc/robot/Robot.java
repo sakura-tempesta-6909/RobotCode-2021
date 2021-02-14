@@ -304,7 +304,16 @@ public class Robot extends TimedRobot {
                 state.driveStraightSpeed = Util.deadbandProcessing(-driver.getY(GenericHID.Hand.kLeft));
                 state.driveRotateSpeed = Util.deadbandProcessing(driver.getX(GenericHID.Hand.kRight));
 
-                state.intakeState = State.IntakeState.kDrive;
+                // 常にローラーを回しておくかどうかを制御
+                if (driver.getYButton()) {
+                    // D Y  ローラー回すかを切り替える
+                    state.is_intakeRollInDrive = !state.is_intakeRollInDrive;
+                }
+                if (state.is_intakeRollInDrive) {
+                    state.intakeState = State.IntakeState.kDrive;
+                } else {
+                    state.intakeState = State.IntakeState.doNothing;
+                }
 
                 if (Util.deadbandCheck(driver.getTriggerAxis(GenericHID.Hand.kLeft))) {
                     //D LT ボールを取り込む
