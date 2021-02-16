@@ -36,8 +36,8 @@ public class Shooter {
     /**
      * シューターを動かす
      * 
-     * @param leftSpeed 左のシューターのスピード。正で取り込む方向。単位、範囲不明
-     * @param rightSpeed 右のシューターのスピード。負で取り込む方向。単位、範囲不明
+     * @param leftSpeed 左のシューターのスピード。正で取り込む方向。(単位不明)[範囲不明だが-1,1の予感]
+     * @param rightSpeed 右のシューターのスピード。負で取り込む方向。(単位不明)[範囲不明だが-1,1の予感]
      */
     public void setSpeed(double leftSpeed, double rightSpeed) {
         double targetLeftVelocity_UnitsPer100ms = leftSpeed * Const.shooterMotorMaxOutput;
@@ -49,12 +49,36 @@ public class Shooter {
     /**
      * シューターを動かす
      * 
-     * @param speedPercentLeft 左のシューターのスピード。正で取り込む方向。(PercentOutput)[-1, 1]
-     * @param speedPercentRight 右のシューターのスピード。負で取り込む方向。(PercentOutput)[-1, 1]
+     * @param speedPercentLeft 左のシューターのスピード。正で取り込む方向。 (PercentOutput)[-1, 1]
+     * @param speedPercentRight 右のシューターのスピード。負で取り込む方向。 (PercentOutput)[-1, 1]
      */
     public void setSpeedPercent(double speedPercentLeft, double speedPercentRight) {
         shooterLeft.set(ControlMode.PercentOutput, speedPercentLeft);
         shooterRight.set(ControlMode.PercentOutput, speedPercentRight);
 
     }
+
+    /**
+     * 左のシューターのスピード取得
+     * 
+     * @return 左のシューターのスピード (単位不明)[範囲不明だが10万で最大近い模様]
+     */
+    public double getMotorSpeed() {
+        return getMotorSpeed(true);
+    }
+    /**
+     * シューターのスピード取得
+     * 
+     * @param isLeft 左なのか右なのか
+     * 
+     * @return 選ばれたシューターのスピード(単位不明)[範囲不明だが10万で最大近い模様]
+     */
+    public double getMotorSpeed(boolean isLeft) {
+        if (isLeft) {
+            return shooterLeft.getSelectedSensorVelocity();
+        } else {
+            return shooterRight.getSelectedSensorVelocity();
+        }
+    }
+
 }

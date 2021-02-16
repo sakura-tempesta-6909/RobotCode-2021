@@ -180,7 +180,7 @@ public class Arm {
      * 
      * <p> (角度の最大最小差分) /（エンコーダー値の最大最小差分) * (エンコーダーの現在値最小値差分) + (角度の最小値)
      * 
-     * @return nowAngle 現在の角度(度数法)[-30, 80]
+     * @return nowAngle 現在の角度 (度数法)[-30, 80]
      */
     public double getArmNow() {
         return Const.armAngleDifference / Const.armPointDifference *

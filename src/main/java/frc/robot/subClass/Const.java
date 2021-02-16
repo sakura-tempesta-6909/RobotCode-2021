@@ -51,9 +51,9 @@ public class Const {
     public final static double outtakeSpeed = -0.6;
 
     //CLIMB
-    //Servo Angle for Climb Lock
-    public static final double unLockAngle = 30;
-    public static final double lockAngle = 0;
+    //Servo Position for Climb Lock
+    public static final double unLockPosition = 1.0;
+    public static final double lockPosition = 0.0;
     //ArmAngle Range for Climb
     public static final double armParallelAngleRange = 10;
     //Climb Extend Speed
