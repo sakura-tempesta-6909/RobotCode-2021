@@ -198,7 +198,7 @@ public class Robot extends TimedRobot {
 
         //モードのクラスの生成
         panelRotationMode = new PanelRotationMode(colorSensorServo);
-        climbMode = new ClimbMode(arm, climbMotor, climbServo, slideMotor);
+        climbMode = new ClimbMode(climbMotor, climbServo, slideMotor);
     }
 
     @Override
@@ -294,10 +294,9 @@ public class Robot extends TimedRobot {
         //状態初期化
         state.stateInit();
         state.armAngle = arm.getArmNow();
-
-        state.shooterLeftMotorSpeed = shooterLeftMotor.getSelectedSensorVelocity();
-        state.shooterRightMotorSpeed = shooterRightMotor.getSelectedSensorVelocity();
-
+        state.shooterLeftMotorSpeed = shooter.getMotorSpeed(true);
+        state.shooterRightMotorSpeed = shooter.getMotorSpeed(false);
+        
         //Mode Change
         switch (state.controlMode) {
             case m_Drive:
@@ -307,6 +306,9 @@ public class Robot extends TimedRobot {
                 } else if (driver.getBackButton()) {
                     //D Back コントロールパネル回転モードへ切り替え
                     state.controlMode = State.ControlMode.m_PanelRotation;
+                    state.armTargetAngle = state.armAngle;
+                    //state.armTargetAngle = State.armAngle;
+                    //state.targetAngle = State.armAngle;
                 } else if (operator.getBackButton()) {
                     //O Backクライムモードへ切り替え
                     state.controlMode = State.ControlMode.m_Climb;
@@ -354,7 +356,16 @@ public class Robot extends TimedRobot {
                 state.driveStraightSpeed = Util.deadbandProcessing(-driver.getY(GenericHID.Hand.kLeft));
                 state.driveRotateSpeed = Util.deadbandProcessing(driver.getX(GenericHID.Hand.kRight));
 
-                state.intakeState = State.IntakeState.kDrive;
+                // 常にローラーを回しておくかどうかを制御
+                if (driver.getYButton()) {
+                    // D Y  ローラー回すかを切り替える
+                    state.is_intakeRollInDrive = !state.is_intakeRollInDrive;
+                }
+                if (state.is_intakeRollInDrive) {
+                    state.intakeState = State.IntakeState.kDrive;
+                } else {
+                    state.intakeState = State.IntakeState.doNothing;
+                }
 
                 if (Util.deadbandCheck(driver.getTriggerAxis(GenericHID.Hand.kLeft))) {
                     //D LT ボールを取り込む
@@ -386,9 +397,9 @@ public class Robot extends TimedRobot {
                     state.shooterState = State.ShooterState.kShoot;
                     state.intakeBeltState = State.IntakeBeltState.kOuttake;
                 } else if (Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kLeft))) {
-                    //O LT 砲台の角度をゴールへ調節する(真下にある時、上へ)
-                    state.armState = State.ArmState.k_PID;
-                    state.armSetAngle = Const.armShootBelowAngle;
+                    //O LT 60度に角度調整//
+                    state.armState = State.ArmState.k_ConstAng;
+                    state.armFinalTargetAngle = 35;
                 } else if (operator.getYButton()) {
                     //O Y　砲台の角度調節（InitialLineにあるとき）
                     state.armState = State.ArmState.k_PID;
@@ -401,19 +412,10 @@ public class Robot extends TimedRobot {
                     //O LStick Y 砲台の角度を手動で調節, 正か負のみ
                     state.armState = State.ArmState.k_Adjust;
                     state.armMotorSpeed = -operator.getY(GenericHID.Hand.kLeft);
-                } else if (operator.getBButton()) {
-                    //O B 60度に角度調整//
-                    state.armState = State.ArmState.k_ConstAng;
-                    state.armSetAngle = 60; //後で変更予定
-                    state.armFinalTargetAngle = 60;
                 }
-
-                /*
-                * if(Util.deadandCheck(operator.getTriggerAxis(GenericHID.Hand.kRight))&&Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kLeft))){
-                * state.intakeBeltState = State.IntakeBeltState.kouttake;
-                * }
-                */
-
+                    /*if(Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kRight))&&Util.deadbandCheck(operator.getTriggerAxis(GenericHID.Hand.kLeft))){
+                        state.intakeBeltState = State.IntakeBeltState.kouttake;
+                    }*/
                 break;
 
             case m_Climb:

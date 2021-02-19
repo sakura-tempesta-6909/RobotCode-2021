@@ -51,9 +51,9 @@ public class Const {
     public final static double outtakeSpeed = -0.6;
 
     //CLIMB
-    //Servo Angle for Climb Lock
-    public static final double unLockAngle = 30;
-    public static final double lockAngle = 0;
+    //Servo Position for Climb Lock
+    public static final double unLockPosition = 1.0;
+    public static final double lockPosition = 0.0;
     //ArmAngle Range for Climb
     public static final double armParallelAngleRange = 10;
     //Climb Extend Speed
@@ -84,9 +84,10 @@ public class Const {
 
     //以下立崎追記分（完成したら整理します）
     public static final double ArmFullSpeedTime = 5;//最大速度になるまでにかかる時間
-    public static final double ArmMaxSpeed = 0.1;
+    public static final double ArmMaxSpeed = 0.2;
     public static final double ArmConAng = Const.ArmFullSpeedTime * Const.ArmMaxSpeed;//台形加速実施角度（標準）
     public static final double Acceleration = 0.1;
+    public static final double ArmPGain = 0.1;
 
 
     //目標角度

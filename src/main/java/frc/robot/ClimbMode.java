@@ -5,13 +5,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subClass.Arm;
-import frc.robot.subClass.Const;
-import frc.robot.subClass.OriginalTimer;
-import frc.robot.subClass.State;
+import frc.robot.subClass.*;
 
 public class ClimbMode {
-    Arm arm;
 
     //クライム用のモーター&エンコーダー
     private TalonSRX climbMotor;
@@ -23,7 +19,7 @@ public class ClimbMode {
 
     private int n_extendReverse;
 
-    ClimbMode(Arm arm, TalonSRX climbMotor, Servo climbServo, TalonSRX climbSlideMotor) {
+    ClimbMode(TalonSRX climbMotor, Servo climbServo, TalonSRX climbSlideMotor) {
         this.climbMotor = climbMotor;
         this.climbServo = climbServo;
         this.slideMotor = climbSlideMotor;
@@ -47,7 +43,6 @@ public class ClimbMode {
         );
         this.slideTimer = new Timer();
         slideTimer.start();
-        this.arm = arm;
 
         climbMotor.setNeutralMode(NeutralMode.Brake);
     }
@@ -104,7 +99,7 @@ public class ClimbMode {
         } else {
             // Arｍ機構と合うようにスピードを調整
             state.armState = State.ArmState.k_Adjust;
-            state.armMotorSpeed = arm.setFeedForward(armAngle) + Const.climbArmExtendSpeed + state.climbExtendAdjustSpeed;
+            state.armMotorSpeed = Util.getFeedForward(armAngle) + Const.climbArmExtendSpeed + state.climbExtendAdjustSpeed;
             System.out.println("armMotorSpeed" + state.armMotorSpeed);
         }
             /*
@@ -138,15 +133,21 @@ public class ClimbMode {
 
     // クライムをアンロックする
     private void unlockServo() {
-        setServoAngle(Const.unLockAngle);
+        setServoPosition(Const.unLockPosition);
     }
 
     // クライムをロックする
     private void lockServo() {
-        setServoAngle(Const.lockAngle);
+        setServoPosition(Const.lockPosition);
     }
 
-
+    /**
+     * Climb後のスライド.
+     * 
+     * <p> 30Aを超える電流を流して滑り続けるとモーターが煙を出すので0.3秒のクールダウンを入れている。
+     * 
+     * @param speed スライドするスピード (PercentOutput)[-1, 1]
+     */
     private void setSlideMotorSpeed(double speed) {
         if (slideMotor.getStatorCurrent() > 30) {
             slideTimer.reset();
@@ -161,11 +162,21 @@ public class ClimbMode {
         System.out.println("slideMotorCurrent(Out):" + slideMotor.getStatorCurrent());
     }
 
+    /**
+     * ワイヤーの展開.
+     * 
+     * @param speed ワイヤーを展開するスピード。正で展開。 (PercentOutput)[-1,1]
+     */
     public void setClimbMotorSpeed(double speed) {
         climbMotor.set(ControlMode.PercentOutput, speed);
     }
 
-    private void setServoAngle(double angle) {
-        climbServo.set(angle);
+    /**
+     * ラチェットのつけ外し
+     * 
+     * @param position サーボの角度 (Position)[0.0, 1.0]
+     */
+    private void setServoPosition(double postion) {
+        climbServo.set(postion);
     }
 }
