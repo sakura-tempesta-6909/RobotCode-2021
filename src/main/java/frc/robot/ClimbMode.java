@@ -133,15 +133,21 @@ public class ClimbMode {
 
     // クライムをアンロックする
     private void unlockServo() {
-        setServoAngle(Const.unLockAngle);
+        setServoPosition(Const.unLockPosition);
     }
 
     // クライムをロックする
     private void lockServo() {
-        setServoAngle(Const.lockAngle);
+        setServoPosition(Const.lockPosition);
     }
 
-
+    /**
+     * Climb後のスライド.
+     * 
+     * <p> 30Aを超える電流を流して滑り続けるとモーターが煙を出すので0.3秒のクールダウンを入れている。
+     * 
+     * @param speed スライドするスピード (PercentOutput)[-1, 1]
+     */
     private void setSlideMotorSpeed(double speed) {
         if (slideMotor.getStatorCurrent() > 30) {
             slideTimer.reset();
@@ -156,11 +162,21 @@ public class ClimbMode {
         System.out.println("slideMotorCurrent(Out):" + slideMotor.getStatorCurrent());
     }
 
+    /**
+     * ワイヤーの展開.
+     * 
+     * @param speed ワイヤーを展開するスピード。正で展開。 (PercentOutput)[-1,1]
+     */
     public void setClimbMotorSpeed(double speed) {
         climbMotor.set(ControlMode.PercentOutput, speed);
     }
 
-    private void setServoAngle(double angle) {
-        climbServo.set(angle);
+    /**
+     * ラチェットのつけ外し
+     * 
+     * @param position サーボの角度 (Position)[0.0, 1.0]
+     */
+    private void setServoPosition(double postion) {
+        climbServo.set(postion);
     }
 }

@@ -241,10 +241,9 @@ public class Robot extends TimedRobot {
         //状態初期化
         state.stateInit();
         state.armAngle = arm.getArmNow();
-
-        state.shooterLeftMotorSpeed = shooterLeftMotor.getSelectedSensorVelocity();
-        state.shooterRightMotorSpeed = shooterRightMotor.getSelectedSensorVelocity();
-
+        state.shooterLeftMotorSpeed = shooter.getMotorSpeed(true);
+        state.shooterRightMotorSpeed = shooter.getMotorSpeed(false);
+        
         //Mode Change
         switch (state.controlMode) {
             case m_Drive:

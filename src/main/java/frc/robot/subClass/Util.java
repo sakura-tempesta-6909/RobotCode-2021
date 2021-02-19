@@ -24,22 +24,32 @@ public class Util {
      * 
      * <p> (地面と水平な時の重力オフセット) * (cos現在角度)
      * 
-     * @param nowAngle 現在の角度
+     * @param nowAngle 現在の角度(度数法)[-30, 80]
+     * 
+     * @return FeedForward 重力オフセット(PercentOutput)[-1, 1]
      */
     public static double getFeedForward(double nowAngle) {
         return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
     }
 
+    /** 
+     * エンコーダの値(point)を角度に変換.
+     * 
+     * @param point エンコーダの値[160付近, 500付近]
+     * 
+     * @return angle 角度(度数法)[-30, 80]
+     * 
+     */
     public static double pointToAngle(double point) {
         return  (point - Const.armMinPoint) * Const.armAngleDifference / Const.armPointDifference + Const.armMinAngle;
     }
 
     /** 
-     * 目標角度に合わせたPIDの目標値を計算.
+     * 角度をエンコーダの値(point)に変換.
      * 
-     * <p> (角度の目標値最小値差分) *（エンコーダー値の最大最小差分) / (角度の最大最小差分) + (最小値からの差分)
+     * @param angle 角度(度数法)[-30, 80]
      * 
-     * @param angle 角度の目標値
+     * @return point エンコーダの値[160付近, 500付近]
      */
     public static double angleToPoint(double angle) {
         return (angle - Const.armMinAngle) * Const.armPointDifference /
