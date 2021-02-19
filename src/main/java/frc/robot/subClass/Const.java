@@ -109,4 +109,10 @@ public class Const {
     public static final double shooterPanelManualSpeed = 0.10;
     public static final double shooterPanelAutoSpeed = 0.03;
     public static final double shooterPanelSlowAutoSpeed = 0.015;
+
+
+    //Autonomous
+    public static final double circumferenceOfWheelCenti = 47.87787204;
+    public static final double quadraturePositionOfWheel = 4132;
+    public static final double quadraturePositionPerWheelCenti = quadraturePositionOfWheel / circumferenceOfWheelCenti;
 }
