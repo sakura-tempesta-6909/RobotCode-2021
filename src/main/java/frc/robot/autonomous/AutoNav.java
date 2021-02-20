@@ -8,22 +8,24 @@ public class AutoNav {
 
     public AutoNavStatus autoNavStatus;
 
-    public AutoNav(){
+    public AutoNav() {
         autoNavStatus = AutoNavStatus.waiting;
     }
 
-    public void applyState(State state){
-        if(state.autoDriveState == State.AutoDriveState.kAutoNavBlue){
+    public void applyState(State state) {
+        if (state.autoDriveState == State.AutoDriveState.kAutoNavBlue) {
 
-        }else if(state.autoDriveState == State.AutoDriveState.kAutoNavRed){
-            switch (autoNavStatus){
+        } else if (state.autoDriveState == State.AutoDriveState.kAutoNavRed) {
+            switch (autoNavStatus) {
                 case waiting:
                     autoNavStatus = AutoNavStatus.phase1;
                     break;
                 case phase1:
                     state.driveLeftSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
                     state.driveRightSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
-                    if(isPositionAchievement(state)){ autoNavStatus = AutoNavStatus.finish;}
+                    if (isPositionAchievement(state)) {
+                        autoNavStatus = AutoNavStatus.finish;
+                    }
                     break;
                 case phase2:
                     break;
@@ -35,13 +37,11 @@ public class AutoNav {
                     break;
             }
         }
-        Util.sendConsole("AutoNavStatus",autoNavStatus.toString());
+        Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
     }
 
 
-
-
-    private enum AutoNavStatus{
+    private enum AutoNavStatus {
         waiting,
         phase1,
         phase2,
@@ -51,7 +51,7 @@ public class AutoNav {
         finish
     }
 
-    private boolean isPositionAchievement(State state){
-       return Util.isPositionAchievement(state.driveRightPosition, state.driveRightSetPosition, state.driveLeftPosition, state.driveLeftSetPosition);
+    private boolean isPositionAchievement(State state) {
+        return Util.isPositionAchievement(state.driveRightPosition, state.driveRightSetPosition, state.driveLeftPosition, state.driveLeftSetPosition);
     }
 }

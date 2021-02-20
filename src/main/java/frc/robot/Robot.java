@@ -218,14 +218,14 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
 
+
         //ドライブの設定を初期化
         driveRightFrontMotor.configFactoryDefault();
         driveLeftFrontMotor.configFactoryDefault();
 
         //ドライブのPID設定
-        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                Const.kArmPIDLoopIdx,
-                Const.kTimeoutMs);
+
+        driveLeftFrontMotor.configFactoryDefault();
 
         driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
                 Const.kArmPIDLoopIdx,
@@ -248,6 +248,31 @@ public class Robot extends TimedRobot {
 
         driveRightFrontMotor.setSensorPhase(true);
         driveRightFrontMotor.setInverted(false);
+
+        driveLeftFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+        driveLeftFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+        driveLeftFrontMotor.config_kI(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+        driveLeftFrontMotor.config_kD(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+
+        //Armの設定を初期化
+        driveRightFrontMotor.configFactoryDefault();
+
+        //ArmのPID設定
+        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
+                Const.kArmPIDLoopIdx,
+                Const.kTimeoutMs);
+
+        driveRightFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kI(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kD(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+
+
+        driveLeftFrontMotor.setSensorPhase(true);
+        driveLeftFrontMotor.setInverted(true);
+
+        driveRightFrontMotor.setSensorPhase(true);
+        driveRightFrontMotor.setInverted(true);
 
         autonomousTimer = new Timer();
         autonomousTimer.reset();
@@ -285,6 +310,8 @@ public class Robot extends TimedRobot {
         autoNav.applyState(state);
         autoDrive.applyState(state);
     }
+
+
     public void teleopInit() {
         state.controlMode = State.ControlMode.m_Drive;
         panelRotationMode.contractServo();

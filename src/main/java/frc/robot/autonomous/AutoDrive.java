@@ -2,7 +2,6 @@ package frc.robot.autonomous;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.subClass.Const;
 import frc.robot.subClass.State;
 
 public class AutoDrive {

@@ -4,16 +4,17 @@ import frc.robot.subClass.State;
 
 public class GalacticSearch {
 
-    public GalacticSearch(){
+    public GalacticSearch() {
 
     }
 
-    public void applyState(State state){
-        if(state.autoDriveState == State.AutoDriveState.kGalacticSearchBlue){
+    public void applyState(State state) {
+        if (state.autoDriveState == State.AutoDriveState.kGalacticSearchBlue) {
 
-        }else if(state.autoDriveState == State.AutoDriveState.kGalacticSearchRed){
+        } else if (state.autoDriveState == State.AutoDriveState.kGalacticSearchRed) {
 
         }
     }
-
 }
+
+
