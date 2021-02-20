@@ -6,6 +6,8 @@ public class State {
     //Drive
     /** driveStraightSpeed, driveRotateSpeed それぞれDriveMode時の真っ直ぐ進む成分, 回転する成分(PercentOutput) [-1, 1] */
     public double driveStraightSpeed, driveRotateSpeed;
+    public double driveRightSetPosition,driveLeftSetPosition;
+    public double driveRightPosition,driveLeftPosition;
 
 
     //Shooter
@@ -55,6 +57,7 @@ public class State {
     public ClimbArmState climbArmState;
     public ClimbWireState climbWireState;
     public PanelState panelState;
+    public AutoDriveState autoDriveState;
 
     //Control Mode
     public ControlMode controlMode = ControlMode.m_Drive;
@@ -76,6 +79,14 @@ public class State {
         driveState = DriveState.kManual;
         driveStraightSpeed = 0;
         driveRotateSpeed = 0;
+
+        driveLeftSetPosition = 0;
+        driveRightSetPosition = 0;
+
+        driveLeftPosition = 0;
+        driveRightPosition = 0;
+
+        autoDriveState = AutoDriveState.kAutoNavDoNothing;
 
         //Shooter
         shooterState = ShooterState.doNothing;
@@ -113,7 +124,8 @@ public class State {
         m_ShootingBall,
         m_PanelRotation,
         m_Climb,
-        m_Drive
+        m_Drive,
+        m_Auto
     }
 
     public enum DriveState {
@@ -122,6 +134,15 @@ public class State {
         kSuperLow,
         kStop,
         kMiddleLow
+    }
+
+    public enum AutoDriveState{
+        kAutoNavBlue,
+        kGalacticSearchBlue,
+        kAutoNavRed,
+        kGalacticSearchRed,
+        kAutoNavDoNothing,
+        kGalacticSearchDoNothing
     }
 
     public enum ShooterState {
