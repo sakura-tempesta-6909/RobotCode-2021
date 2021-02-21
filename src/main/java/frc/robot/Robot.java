@@ -336,23 +336,30 @@ public class Robot extends TimedRobot {
                     //O LT 砲台の角度をゴールへ調節する(真下にある時、上へ)
                     state.armState = State.ArmState.k_PID;
                     state.armSetAngle = Const.armShootBelowAngle;
+                } else if (operator.getBButton()) {
+                    //O B Red
+                    state.armState = State.ArmState.k_PID;
+                    state.armSetAngle = Util.pointToAngle(Const.interStellarRedPoint);
                 } else if (operator.getYButton()) {
-                    //O Y　砲台の角度調節（InitialLineにあるとき）
+                    //O Y　Yellow
                     state.armState = State.ArmState.k_PID;
-                    state.armSetAngle = Const.armShootInitiationAngle;
+                    state.armSetAngle = Util.pointToAngle(Const.interStellarYellowPoint);
                 } else if (operator.getAButton()) {
-                    //O A　砲台の角度調節（真下にある時、下へ）
+                    //O A　Green
                     state.armState = State.ArmState.k_PID;
-                    state.armSetAngle = Const.armParallelAngle;
-                } else if (Util.deadbandCheck(operator.getY(GenericHID.Hand.kLeft))) {
+                    state.armSetAngle = Util.pointToAngle(Const.interstellarGreenPoint);
+                } else if (operator.getXButton()) {
+                    //O X　Blue
+                    state.armState = State.ArmState.k_PID;
+                    state.armSetAngle = Util.pointToAngle(Const.interStellarBluePoint);
+                } else if (operator.getBumper(GenericHID.Hand.kRight)) {
+                    //O RB PowerPortChallenge
+                    state.armState = State.ArmState.k_PID;
+                    state.armSetAngle = Util.pointToAngle(Const.PowerPortChallengePoint);
+                }else if (Util.deadbandCheck(operator.getY(GenericHID.Hand.kLeft))) {
                     //O LStick Y 砲台の角度を手動で調節, 正か負のみ
                     state.armState = State.ArmState.k_Adjust;
                     state.armMotorSpeed = -operator.getY(GenericHID.Hand.kLeft);
-                } else if (operator.getBButton()) {
-                    //O B 60度に角度調整//
-                    state.armState = State.ArmState.k_ConstAng;
-                    state.armSetAngle = 60; //後で変更予定
-                    state.armFinalTargetAngle = 60;
                 }
 
                 /*

@@ -29,4 +29,8 @@ public class Util {
     public static double getFeedForward(double nowAngle) {
         return Const.armMaxOffset * Math.cos(Math.toRadians(nowAngle));
     }
+
+    public static double pointToAngle(double point) {
+        return  (point - Const.armMinPoint) * Const.armAngleDifference / Const.armPointDifference + Const.armMinAngle;
+    }
 }
