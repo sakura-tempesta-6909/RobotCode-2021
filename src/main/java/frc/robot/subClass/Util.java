@@ -56,7 +56,6 @@ public class Util {
                 Const.armAngleDifference + Const.armMinPoint;
     }
 
-
     /**
      * モーターの差分を計算して目標値に達しているかを返す
      *
