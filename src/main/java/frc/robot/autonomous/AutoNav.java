@@ -22,7 +22,7 @@ public class AutoNav {
                     break;
                 case phase1:
                     state.driveLeftSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
+                    state.driveRightSetPosition = 200 * Const.quadraturePositionPerWheelCenti;
                     if (isPositionAchievement(state)) {
                         autoNavStatus = AutoNavStatus.finish;
                     }
@@ -35,13 +35,15 @@ public class AutoNav {
                     break;
                 case phase5:
                     break;
+                case finish:
+                    break;
             }
         }
-        Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
+        //Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
     }
 
 
-    private enum AutoNavStatus {
+    public enum AutoNavStatus {
         waiting,
         phase1,
         phase2,
