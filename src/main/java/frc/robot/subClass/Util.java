@@ -55,6 +55,4 @@ public class Util {
         return (angle - Const.armMinAngle) * Const.armPointDifference /
                 Const.armAngleDifference + Const.armMinPoint;
     }
-
-    
 }
