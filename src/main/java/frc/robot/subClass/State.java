@@ -9,6 +9,8 @@ public class State {
     public double driveRightSetPosition,driveLeftSetPosition;
     public double driveRightPosition,driveLeftPosition;
 
+    public double gyroAngle;
+    public double gyroRate;
 
     //Shooter
     /** panelManualSpeed PanelRotationMode時の回転スピード.普通定数の入力 (単位不明)[範囲不明だが-1,1の予感] */
@@ -64,6 +66,7 @@ public class State {
 
     /** is_intakeFull ボールを5個ゲットしたか */
     public boolean is_intakeFull;
+    public boolean is_intake_finish;
     /** is_intakeRollInDrive m_Drive時、インテイクを回すモードにしているかどうか */
     public boolean is_intakeRollInDrive = true;
 
@@ -86,6 +89,9 @@ public class State {
         driveLeftPosition = 0;
         driveRightPosition = 0;
 
+        gyroAngle = 0;
+        gyroRate = 0;
+
         autoDriveState = AutoDriveState.kAutoNavDoNothing;
 
         //Shooter
@@ -98,6 +104,7 @@ public class State {
         //Intake
         intakeState = IntakeState.doNothing;
         is_intakeFull = false;
+        is_intake_finish = false;
 
         //IntakeBeltState
         intakeBeltState = IntakeBeltState.doNothing;

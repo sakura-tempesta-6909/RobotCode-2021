@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.autonomous.AutoDrive;
 import frc.robot.autonomous.AutoNav;
 import frc.robot.autonomous.GalacticSearch;
@@ -19,6 +20,7 @@ public class Robot extends TimedRobot {
     //とりあえず、XboxController2つ
     XboxController driver, operator;
 
+    ADXRS450_Gyro gyro;
     //DriveMotor
     WPI_TalonSRX driveRightFrontMotor, driveLeftFrontMotor;
     VictorSPX driveRightBackMotor, driveLeftBackMotor;
@@ -70,6 +72,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+
+        //ジャイロセンサー
+        gyro = new ADXRS450_Gyro();
+        gyro.calibrate();
+        gyro.reset();
 
         //Intakeセンサー
         intakeFrontSensor = new DigitalInput(Const.IntakeBeltSensorFrontPort);
@@ -229,9 +236,7 @@ public class Robot extends TimedRobot {
 
         driveLeftFrontMotor.configFactoryDefault();
 
-        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                Const.kArmPIDLoopIdx,
-                Const.kTimeoutMs);
+        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
 
         driveLeftFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
         driveLeftFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
@@ -242,9 +247,7 @@ public class Robot extends TimedRobot {
         driveRightFrontMotor.configFactoryDefault();
 
         //ArmのPID設定
-        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                Const.kArmPIDLoopIdx,
-                Const.kTimeoutMs);
+        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
 
         driveRightFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
         driveRightFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
@@ -298,6 +301,8 @@ public class Robot extends TimedRobot {
         //Util.sendConsole("SetPosition",state.driveLeftSetPosition+"");
         //Util.sendConsole("AutoDriveMode",state.autoDriveState.toString());
         state.autoDriveState = State.AutoDriveState.kAutoNavRed;
+        state.gyroAngle = gyro.getAngle();
+        state.gyroRate = gyro.getRate();
         // drive.applyState(state);
         arm.applyState(state);
         shooter.applyState(state);
@@ -307,7 +312,7 @@ public class Robot extends TimedRobot {
         autoNav.applyState(state);
         autoDrive.applyState(state);
         System.out.println("LeftSetPosition" + state.driveLeftSetPosition);
-        System.out.println("RihgtSetPosition" + state.driveRightSetPosition);
+        System.out.println("RightSetPosition" + state.driveRightSetPosition);
         System.out.println("  ");
     }
 
@@ -338,12 +343,12 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         //super.disabledInit();
-        // state.stateInit();
+         state.stateInit();
         // drive.applyState(state);
         // arm.applyState(state);
-        // shooter.applyState(state);
-        // intake.applyState(state);
-        // intakeBelt.applyState(state);
+         shooter.applyState(state);
+         intake.applyState(state);
+         intakeBelt.applyState(state);
     }
 
     @Override
