@@ -26,10 +26,14 @@ public class IntakeBelt {
             case kOuttake:
                 System.out.println("leftSpeedaaa" + state.shooterLeftMotorSpeed);
                 System.out.println("RightSpeedaaa" + state.shooterRightMotorSpeed);
-                if (state.shooterLeftMotorSpeed < -100000 && state.shooterRightMotorSpeed > 100000) {
-                    outtake();
+                if(state.controlMode == State.ControlMode.m_ShootingBall) {
+                    if (state.shooterLeftMotorSpeed < -100000 && state.shooterRightMotorSpeed > 100000) {
+                        outtake();
+                    } else {
+                        setSpeed(0, 0);
+                    }
                 } else {
-                    setSpeed(0, 0);
+                    outtake();
                 }
                 break;
             case doNothing:
@@ -38,6 +42,12 @@ public class IntakeBelt {
         }
     }
 
+    /**
+     * ベルトを動かす
+     * 
+     * @param frontSpeed 前のベルトのスピード(PercentOutput)[-1, 1]
+     * @param backSpeed 後ろのベルトのスピード(PercentOutput)[-1, 1]
+     */
     private void setSpeed(double frontSpeed, double backSpeed) {
         intakeBeltFront.set(ControlMode.PercentOutput, frontSpeed);
         intakeBeltBack.set(ControlMode.PercentOutput, backSpeed);
@@ -52,7 +62,7 @@ public class IntakeBelt {
             if (is_BallBack()) {
                 //前後にボールあれば満タン
                 setSpeed(0, 0);
-                state.is_IntakeFull = true;
+                state.is_intakeFull = true;
                 System.out.println("   Intake Fulllllll   ");
                 return;
             }

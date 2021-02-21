@@ -34,6 +34,12 @@ public class Drive extends DifferentialDrive {
         }
     }
 
+    /**
+     * ドライブベースを動かす.
+     * 
+     * @param straightSpeed 真っ直ぐ進む成分(PercentOutput)[-1, 1]
+     * @param rotateSpeed 回転する成分(PercentOutput) [-1, 1]
+     */
     public void setSpeed(double straightSpeed, double rotateSpeed) {
         arcadeDrive(straightSpeed, rotateSpeed);
     }
