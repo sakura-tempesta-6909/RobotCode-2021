@@ -27,6 +27,11 @@ public class Intake {
         }
     }
 
+    /**
+     * インテイク(前についてるローラー)を動かす
+     * 
+     * @param speed スピード(PercentOutput)[-1, 1]
+     */
     public void setSpeed(double speed) {
         intakeMotor.set(ControlMode.PercentOutput, speed);
     }

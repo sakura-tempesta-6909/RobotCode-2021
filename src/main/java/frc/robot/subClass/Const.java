@@ -51,9 +51,9 @@ public class Const {
     public final static double outtakeSpeed = -0.6;
 
     //CLIMB
-    //Servo Angle for Climb Lock
-    public static final double unLockAngle = 30;
-    public static final double lockAngle = 0;
+    //Servo Position for Climb Lock
+    public static final double unLockPosition = 1.0;
+    public static final double lockPosition = 0.0;
     //ArmAngle Range for Climb
     public static final double armParallelAngleRange = 10;
     //Climb Extend Speed
@@ -84,9 +84,10 @@ public class Const {
 
     //以下立崎追記分（完成したら整理します）
     public static final double ArmFullSpeedTime = 5;//最大速度になるまでにかかる時間
-    public static final double ArmMaxSpeed = 0.1;
+    public static final double ArmMaxSpeed = 0.2;
     public static final double ArmConAng = Const.ArmFullSpeedTime * Const.ArmMaxSpeed;//台形加速実施角度（標準）
     public static final double Acceleration = 0.1;
+    public static final double ArmPGain = 0.1;
 
 
     //目標角度
@@ -99,13 +100,23 @@ public class Const {
     public static final double armShootInitiationAngle = (armShootInitiationPoint - armMinPoint) * armAngleDifference / armPointDifference + armMinAngle;
 
     // For Interstellar Accuracy Challenge
-    public static final double interstellarGreenPoint = 408;
-    public static final double interStellarYellowPoint = 360;
-    public static final double interStellarBluePoint= 345;
-    public static final double interStellarRedPoint = 347;
+    public static final double interstellarGreenPoint = 400;
+    public static final double interStellarYellowPoint = 375;
+    public static final double interStellarBluePoint= 355;
+    public static final double interStellarRedPoint = 345;
+
+    // For POWER PORT Challenge
+    // 6のラインから打つとき
+    public static final double PowerPortChallengePoint = 346;
 
     //PANEL
     public static final double shooterPanelManualSpeed = 0.10;
     public static final double shooterPanelAutoSpeed = 0.03;
     public static final double shooterPanelSlowAutoSpeed = 0.015;
+
+
+    //Autonomous
+    public static final double circumferenceOfWheelCenti = 47.87787204;
+    public static final double quadraturePositionOfWheel = 4132;
+    public static final double quadraturePositionPerWheelCenti = quadraturePositionOfWheel / circumferenceOfWheelCenti;
 }
