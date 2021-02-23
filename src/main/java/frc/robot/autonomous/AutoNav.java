@@ -7,7 +7,7 @@ import frc.robot.subClass.Util;
 public class AutoNav {
 
     public AutoNavState autoNavStatus;
-    private Double beforeGyroAngle = 0.0;
+    private Double beforeGyroAngle=0.0 ,beforeSetLeftPosition=0.0,beforeSetRightPosition= 0.0;
     private int positionAchievementCount = 0;
 
     public AutoNav() {
@@ -24,8 +24,8 @@ public class AutoNav {
                     autoNavStatus = AutoNavState.phase1;
                     break;
                 case phase1:
-                    state.driveLeftSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
+                    state.driveLeftSetPosition = beforeSetLeftPosition + 100 * Const.quadraturePositionPerWheelCenti;
+                    state.driveRightSetPosition = beforeSetRightPosition + 100 * Const.quadraturePositionPerWheelCenti;
                     if (isPositionAchievement(state)) {
                         if (true) {
                             phaseInit(state);
@@ -43,15 +43,14 @@ public class AutoNav {
                     }
                     break;
                 case phase3:
-                    if(Math.abs(state.gyroAngle - beforeGyroAngle)>180){
-                        //autoNavStatus = AutoNavState.finish;
-
-                        state.driveRightSetPosition = state.driveRightActualPosition;
-                        state.driveLeftSetPosition = state.driveLeftActualPosition;
+                    if(Math.abs(state.gyroAngle - beforeGyroAngle)>90){
+                        Util.sendConsole("d", "djjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
                         if(isPositionAchievement(state)) {
                             if (positionAchievementCount == 1) {
                                 state.driveRightSetPosition = state.driveRightActualPosition;
                                 state.driveLeftSetPosition = state.driveLeftActualPosition;
+                                beforeSetLeftPosition = state.driveLeftSetPosition;
+                                beforeSetRightPosition = state.driveRightSetPosition;
                             } else if (positionAchievementCount > 10) {
                                 phaseInit(state);
                                 autoNavStatus = AutoNavState.finish;
@@ -59,9 +58,15 @@ public class AutoNav {
                         }
 
                     }else{
-                        state.driveLeftSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
-                        state.driveRightSetPosition = -100 * Const.quadraturePositionPerWheelCenti;
+                        state.driveLeftSetPosition =  beforeSetLeftPosition + (80 - (state.gyroAngle - beforeGyroAngle)) * Const.quadraturePositionPerWheelCenti;
+                        state.driveRightSetPosition = beforeSetRightPosition - (80- (state.gyroAngle - beforeGyroAngle)) * Const.quadraturePositionPerWheelCenti;
+                        beforeSetRightPosition = state.driveRightSetPosition;
+                        beforeSetLeftPosition = state.driveLeftSetPosition;
                     }
+
+                    Util.sendConsole("beforeGyroAngle", beforeGyroAngle + "");
+                    Util.sendConsole("beforeSetLeftPosition", beforeSetLeftPosition + "");
+                    Util.sendConsole("beforeSetRightPosition", beforeSetRightPosition + "");
                     break;
                 case phase4:
                     break;
@@ -74,7 +79,7 @@ public class AutoNav {
                     break;
             }
         }
-        Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
+        //Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
         Util.sendConsole("GyroStatus", state.gyroAngle - beforeGyroAngle+"");
     }
 
@@ -94,6 +99,8 @@ public class AutoNav {
         state.intakeBeltState = State.IntakeBeltState.doNothing;
         state.shooterState = State.ShooterState.doNothing;
         beforeGyroAngle = state.gyroAngle;
+        beforeSetRightPosition = state.driveRightSetPosition;
+        beforeSetLeftPosition = state.driveLeftSetPosition;
         state.is_intake_finish = false;
         positionAchievementCount = 0;
     }
@@ -116,4 +123,7 @@ public class AutoNav {
          */
     }
 
+    private boolean isAchievement(State state){
+        Math.abs(state.gyroAngle - beforeGyroAngle)>90
+    }
 }

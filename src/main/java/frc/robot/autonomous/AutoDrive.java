@@ -28,8 +28,8 @@ public class AutoDrive {
                     break;
             }
         }
-        System.out.println("left_velocity" + leftMotor.getSelectedSensorVelocity());
-        System.out.println("right_velocity" + rightMotor.getSelectedSensorVelocity());
+        //System.out.println("left_velocity" + leftMotor.getSelectedSensorVelocity());
+        //System.out.println("right_velocity" + rightMotor.getSelectedSensorVelocity());
     }
 
     private void setPosition(double driveLeftSetPosition,double driveRightSetPosition){
