@@ -6,6 +6,9 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.*;
+import frc.robot.autonomous.AutoDrive;
+import frc.robot.autonomous.AutoNav;
+import frc.robot.autonomous.GalacticSearch;
 import frc.robot.subClass.*;
 
 //TalonSRX&VictorSPXのライブラリー
@@ -16,6 +19,7 @@ public class Robot extends TimedRobot {
     //とりあえず、XboxController2つ
     XboxController driver, operator;
 
+    ADXRS450_Gyro gyro;
     //DriveMotor
     WPI_TalonSRX driveRightFrontMotor, driveLeftFrontMotor;
     VictorSPX driveRightBackMotor, driveLeftBackMotor;
@@ -53,6 +57,9 @@ public class Robot extends TimedRobot {
     IntakeBelt intakeBelt;
     Arm arm;
     ArmSensor armSensor;
+    AutoDrive autoDrive;
+    AutoNav autoNav;
+    GalacticSearch galacticSearch;
 
     //モード
     PanelRotationMode panelRotationMode;
@@ -64,6 +71,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+
+        //ジャイロセンサー
+        gyro = new ADXRS450_Gyro();
+        gyro.calibrate();
+        gyro.reset();
 
         //Intakeセンサー
         intakeFrontSensor = new DigitalInput(Const.IntakeBeltSensorFrontPort);
@@ -89,9 +101,6 @@ public class Robot extends TimedRobot {
         intakeBeltBackMotor = new VictorSPX(Const.intakeBeltBackMotor);
         intakeMotor = new VictorSPX(Const.IntakeMotorPort);
 
-        //IntakeBeltのフォローの設定　※しない
-        //intakeBeltBackMotor.follow(intakeBeltFrontMotor);
-
         //Climb Motor
         climbMotor = new TalonSRX(Const.climbMotorPort);
         climbServo = new Servo(Const.climbServoPort);
@@ -107,28 +116,14 @@ public class Robot extends TimedRobot {
         //cameraの初期化
         driveCamera = CameraServer.getInstance();
         armCamera = CameraServer.getInstance();
-        driveCamera.startAutomaticCapture("drive", 1);
-        armCamera.startAutomaticCapture("arm", 0);
+        //driveCamera.startAutomaticCapture("drive", 1);
+        //armCamera.startAutomaticCapture("arm", 0);
 
         //ドライブモーターの初期化
         driveRightFrontMotor = new WPI_TalonSRX(Const.DriveRightFrontPort);
         driveRightBackMotor = new VictorSPX(Const.DriveRightBackPort);
         driveLeftFrontMotor = new WPI_TalonSRX(Const.DriveLeftFrontPort);
         driveLeftBackMotor = new VictorSPX(Const.DriveLeftBackPort);
-        // 初期化
-        driveLeftFrontMotor.configFactoryDefault();
-        driveRightFrontMotor.configFactoryDefault();
-        driveRightBackMotor.configFactoryDefault();
-        driveLeftBackMotor.configFactoryDefault();
-        // エンコーダ
-        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
-        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
-        // エンコーダの反転修正
-        driveLeftFrontMotor.setSensorPhase(true);
-        driveRightFrontMotor.setSensorPhase(true);
-        // フォローの設定
-        driveRightBackMotor.follow(driveRightFrontMotor);
-        driveLeftBackMotor.follow(driveLeftFrontMotor);
 
         //シューターの設定を初期化
         shooterRightMotor.configFactoryDefault();
@@ -163,15 +158,32 @@ public class Robot extends TimedRobot {
         // モーターの反転修正
         armMotor.setInverted(true);
 
+        // 初期化
+        driveLeftFrontMotor.configFactoryDefault();
+        driveRightFrontMotor.configFactoryDefault();
+        driveRightBackMotor.configFactoryDefault();
+        driveLeftBackMotor.configFactoryDefault();
+        // エンコーダ
+        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
+        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
+        // エンコーダの反転修正
+        driveLeftFrontMotor.setSensorPhase(true);
+        driveRightFrontMotor.setSensorPhase(true);
+        // フォローの設定
+        driveRightBackMotor.follow(driveRightFrontMotor);
+        driveLeftBackMotor.follow(driveLeftFrontMotor);
+
         //サブクラスの生成
         armSensor = new ArmSensor(armMotor);
         arm = new Arm(armMotor, armEncoder, armSensor);
-        drive = new Drive(driveLeftFrontMotor, driveRightFrontMotor);
         shooter = new Shooter(shooterRightMotor, shooterLeftMotor);
         intake = new Intake(intakeMotor);
         intakeBelt = new IntakeBelt(intakeBeltFrontMotor, intakeBeltBackMotor, intakeFrontSensor, intakeBackSensor);
-        state = new State();
+    
+        autoNav = new AutoNav();
+        galacticSearch = new GalacticSearch();
 
+        state = new State();
 
         //モードのクラスの生成
         panelRotationMode = new PanelRotationMode(colorSensorServo);
@@ -185,79 +197,114 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-
-        //Armの設定を初期化
+        // 初期化
         driveLeftFrontMotor.configFactoryDefault();
-
-        //ArmのPID設定
-        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                Const.kArmPIDLoopIdx,
-                Const.kTimeoutMs);
-
-        driveLeftFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveLeftFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveLeftFrontMotor.config_kI(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveLeftFrontMotor.config_kD(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-
-        //Armの設定を初期化
         driveRightFrontMotor.configFactoryDefault();
-
-        //ArmのPID設定
-        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,
-                Const.kArmPIDLoopIdx,
-                Const.kTimeoutMs);
-
-        driveRightFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveRightFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveRightFrontMotor.config_kI(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveRightFrontMotor.config_kD(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
+        driveRightBackMotor.configFactoryDefault();
+        driveLeftBackMotor.configFactoryDefault();
 
 
+        // エンコーダ
+        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
+        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
+        // エンコーダの反転修正
         driveLeftFrontMotor.setSensorPhase(true);
-        driveLeftFrontMotor.setInverted(true);
-
         driveRightFrontMotor.setSensorPhase(true);
+        // PIDだけ右が逆に動くので反転
         driveRightFrontMotor.setInverted(true);
+        driveRightBackMotor.setInverted(true);
 
+        // PID値設定
+        driveLeftFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
+
+        // フォローの設定
+        driveRightBackMotor.follow(driveRightFrontMotor);
+        driveLeftBackMotor.follow(driveLeftFrontMotor);
+
+        // エンコーダの値リセット
+        driveRightFrontMotor.getSensorCollection().setQuadraturePosition(0, 10);
+        driveLeftFrontMotor.getSensorCollection().setQuadraturePosition(0, 10);
+
+        autoDrive = new AutoDrive(driveLeftFrontMotor,driveRightFrontMotor);
+
+        // タイマーリセット&スタート
         autonomousTimer = new Timer();
         autonomousTimer.reset();
         autonomousTimer.start();
+
+        // DriverStationから情報受取り
         gameData = DriverStation.getInstance().getGameSpecificMessage();
+
         panelRotationMode.contractServo();
+
+        // state初期化
         state.stateInit();
-        drive.applyState(state);
+        state.controlMode = State.ControlMode.m_Auto;
+        state.autoDriveState = State.AutoDriveState.kAutoNavDoNothing;
+        autoNav.autoNavStatus = AutoNav.AutoNavState.waiting;
         arm.applyState(state);
         shooter.applyState(state);
         intake.applyState(state);
         intakeBelt.applyState(state);
+        galacticSearch.applyState(state);
+        autoNav.applyState(state);
+        autoDrive.applyState(state);
     }
 
     @Override
     public void autonomousPeriodic() {
-        double leftPosition = driveLeftFrontMotor.getSelectedSensorPosition(0);
-        double rightPosition = driveRightFrontMotor.getSelectedSensorPosition(0);
-        System.out.println(leftPosition+":::::"+rightPosition);
-        /*
-        if(leftPosition <0||rightPosition<0){
-            leftPosition = 0;
-            rightPosition = 0;
-        }*/
-        driveLeftFrontMotor.set(ControlMode.Position,2000);
-        driveRightFrontMotor.set(ControlMode.Position,2000);
-
+        Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
+        state.driveRightActualPosition = autoDrive.getRightMotorPosition();
+        state.driveLeftActualPosition = autoDrive.getLeftMotorPosition();
+        Util.sendConsole("LeftPosition",state.driveLeftActualPosition +"");
+        Util.sendConsole("RightPosition",state.driveRightActualPosition +"");
+        state.autoDriveState = State.AutoDriveState.kAutoNavRed;
+        state.gyroAngle = gyro.getAngle();
+        state.gyroRate = gyro.getRate();
+        arm.applyState(state);
+        shooter.applyState(state);
+        intake.applyState(state);
+        intakeBelt.applyState(state);
+        galacticSearch.applyState(state);
+        autoNav.applyState(state);
+        autoDrive.applyState(state);
+        System.out.println("LeftSetPosition" + state.driveLeftSetPosition);
+        System.out.println("RightSetPosition" + state.driveRightSetPosition);
+        System.out.println("  ");
     }
 
-    @Override
+
     public void teleopInit() {
         state.controlMode = State.ControlMode.m_Drive;
         panelRotationMode.contractServo();
+        
+        // 初期化
+        driveRightFrontMotor.configFactoryDefault();
+        driveLeftFrontMotor.configFactoryDefault();
+        driveRightBackMotor.configFactoryDefault();
+        driveLeftBackMotor.configFactoryDefault();
+        
+        // フィードバックセンサーの追加
+        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+
+        //ドライブモーターの台形加速
+        driveLeftFrontMotor.configOpenloopRamp(Const.DriveFullSpeedTime);
+        driveRightFrontMotor.configOpenloopRamp(Const.DriveFullSpeedTime);
+
+        // フォロー
+        driveLeftBackMotor.follow(driveLeftFrontMotor);
+        driveRightBackMotor.follow(driveRightFrontMotor);
+
+        drive = new Drive(driveLeftFrontMotor, driveRightFrontMotor);
     }
 
     @Override
     public void teleopPeriodic() {
 
-        System.out.println("leftSpeed" + shooterLeftMotor.getSelectedSensorVelocity());
-        System.out.println("RightSpeed" + shooterRightMotor.getSelectedSensorVelocity());
+        //System.out.println("leftSpeed" + shooterLeftMotor.getSelectedSensorVelocity());
+        //System.out.println("RightSpeed" + shooterRightMotor.getSelectedSensorVelocity());
 
         //状態初期化
         state.stateInit();
@@ -489,16 +536,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
+        Util.sendConsole("LeftPosition", driveLeftFrontMotor.getSelectedSensorPosition()+"");
+        Util.sendConsole("RightPosition",driveRightFrontMotor.getSelectedSensorPosition()+"");
     }
 
     @Override
     public void disabledInit() {
-        super.disabledInit();
-        state.stateInit();
-        drive.applyState(state);
-        arm.applyState(state);
-        shooter.applyState(state);
-        intake.applyState(state);
-        intakeBelt.applyState(state);
+        //super.disabledInit();
+         state.stateInit();
+        // drive.applyState(state);
+        // arm.applyState(state);
+         shooter.applyState(state);
+         intake.applyState(state);
+         intakeBelt.applyState(state);
     }
 }
