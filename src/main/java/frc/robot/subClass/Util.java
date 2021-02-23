@@ -55,4 +55,18 @@ public class Util {
         return (angle - Const.armMinAngle) * Const.armPointDifference /
                 Const.armAngleDifference + Const.armMinPoint;
     }
+
+    /**
+     * モーターの差分を計算して目標値に達しているかを返す
+     *
+     * @param driveRightPosition 右のモーターの現在位置
+     * @param driveRightSetPosition 右のモーターの目標位置
+     * @param driveLeftPosition 左のモーターの現在位置
+     * @param driveLeftSetPosition 左のモーターの目標位置
+     * @return 目標値に到達しているか
+     */
+    public static boolean isPositionAchievement(double driveRightPosition,double driveRightSetPosition,double driveLeftPosition,double driveLeftSetPosition){
+        Util.sendConsole("subtract",Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveLeftSetPosition)))+"");
+        return Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveLeftSetPosition))) < 200 && Math.abs(Math.subtractExact(Math.round(driveLeftPosition), Math.round(driveRightSetPosition))) < 200;
+    }
 }

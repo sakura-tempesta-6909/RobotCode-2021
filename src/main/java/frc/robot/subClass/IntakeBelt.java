@@ -64,11 +64,13 @@ public class IntakeBelt {
                 setSpeed(0, 0);
                 state.is_intakeFull = true;
                 System.out.println("   Intake Fulllllll   ");
+                state.is_intake_finish = true;
                 return;
             }
         } else {
             //ボールなし＝回収済みorゼロ個
             if (is_preBallFront) {
+                state.is_intake_finish = true;
                 //直前ボールあり(回収中)&&現在ボールなし(回収済)ならボールゲット、後ろストップ
                 setSpeed(-1, 0);
                 ballGet = true;

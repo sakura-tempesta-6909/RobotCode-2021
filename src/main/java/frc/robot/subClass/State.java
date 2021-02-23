@@ -6,7 +6,11 @@ public class State {
     //Drive
     /** driveStraightSpeed, driveRotateSpeed それぞれDriveMode時の真っ直ぐ進む成分, 回転する成分(PercentOutput) [-1, 1] */
     public double driveStraightSpeed, driveRotateSpeed;
+    public double driveRightSetPosition,driveLeftSetPosition;
+    public double driveRightActualPosition, driveLeftActualPosition;
 
+    public double gyroAngle;
+    public double gyroRate;
 
     //Shooter
     /** panelManualSpeed PanelRotationMode時の回転スピード.普通定数の入力 (単位不明)[範囲不明だが-1,1の予感] */
@@ -55,12 +59,14 @@ public class State {
     public ClimbArmState climbArmState;
     public ClimbWireState climbWireState;
     public PanelState panelState;
+    public AutoDriveState autoDriveState;
 
     //Control Mode
     public ControlMode controlMode = ControlMode.m_Drive;
 
     /** is_intakeFull ボールを5個ゲットしたか */
     public boolean is_intakeFull;
+    public boolean is_intake_finish;
     /** is_intakeRollInDrive m_Drive時、インテイクを回すモードにしているかどうか */
     public boolean is_intakeRollInDrive = true;
 
@@ -77,6 +83,17 @@ public class State {
         driveStraightSpeed = 0;
         driveRotateSpeed = 0;
 
+        driveLeftSetPosition = 0;
+        driveRightSetPosition = 0;
+
+        driveLeftActualPosition = 0;
+        driveRightActualPosition = 0;
+
+        gyroAngle = 0;
+        gyroRate = 0;
+
+        autoDriveState = AutoDriveState.kAutoNavDoNothing;
+
         //Shooter
         shooterState = ShooterState.doNothing;
         shooterLeftSpeed = 0;
@@ -87,6 +104,7 @@ public class State {
         //Intake
         intakeState = IntakeState.doNothing;
         is_intakeFull = false;
+        is_intake_finish = false;
 
         //IntakeBeltState
         intakeBeltState = IntakeBeltState.doNothing;
@@ -113,7 +131,8 @@ public class State {
         m_ShootingBall,
         m_PanelRotation,
         m_Climb,
-        m_Drive
+        m_Drive,
+        m_Auto
     }
 
     public enum DriveState {
@@ -122,6 +141,15 @@ public class State {
         kSuperLow,
         kStop,
         kMiddleLow
+    }
+
+    public enum AutoDriveState{
+        kAutoNavBlue,
+        kGalacticSearchBlue,
+        kAutoNavRed,
+        kGalacticSearchRed,
+        kAutoNavDoNothing,
+        kGalacticSearchDoNothing
     }
 
     public enum ShooterState {
