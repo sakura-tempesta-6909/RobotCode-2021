@@ -2,6 +2,7 @@ package frc.robot.autonomous;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import frc.robot.subClass.Const;
 import frc.robot.subClass.State;
 import frc.robot.subClass.Util;
 
@@ -16,6 +17,8 @@ public class AutoDrive {
 
     public void applyState(State state) {
         if (state.controlMode == State.ControlMode.m_Auto) {
+            leftMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,state.loopPeakOutput);
+            rightMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,state.loopPeakOutput);
             switch (state.autoDriveState){
                 case kAutoNavRed:
                 case kAutoNavBlue:
@@ -28,8 +31,8 @@ public class AutoDrive {
                     break;
             }
         }
-        System.out.println("left_velocity" + leftMotor.getSelectedSensorVelocity());
-        System.out.println("right_velocity" + rightMotor.getSelectedSensorVelocity());
+        //System.out.println("left_velocity" + leftMotor.getSelectedSensorVelocity());
+        //System.out.println("right_velocity" + rightMotor.getSelectedSensorVelocity());
     }
 
     private void setPosition(double driveLeftSetPosition,double driveRightSetPosition){

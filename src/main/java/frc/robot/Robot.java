@@ -218,6 +218,10 @@ public class Robot extends TimedRobot {
         driveLeftFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
         driveRightFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
 
+        //最大速度の制限
+        driveLeftFrontMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,0.8);
+        driveRightFrontMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,0.8);
+
         // フォローの設定
         driveRightBackMotor.follow(driveRightFrontMotor);
         driveLeftBackMotor.follow(driveLeftFrontMotor);
@@ -260,7 +264,7 @@ public class Robot extends TimedRobot {
         Util.sendConsole("LeftPosition",state.driveLeftActualPosition +"");
         Util.sendConsole("RightPosition",state.driveRightActualPosition +"");
         state.autoDriveState = State.AutoDriveState.kAutoNavRed;
-        state.gyroAngle = gyro.getAngle();
+        state.gyroAngle = gyro.getAngle() % 360;
         state.gyroRate = gyro.getRate();
         arm.applyState(state);
         shooter.applyState(state);
@@ -288,7 +292,14 @@ public class Robot extends TimedRobot {
         driveLeftFrontMotor.configFactoryDefault();
         driveRightBackMotor.configFactoryDefault();
         driveLeftBackMotor.configFactoryDefault();
-        
+
+        // 反転がないことの明示
+        driveLeftFrontMotor.setInverted(false);
+        driveLeftBackMotor.setInverted(false);
+        driveRightFrontMotor.setInverted(false);
+        driveRightBackMotor.setInverted(false);
+
+
         // フィードバックセンサーの追加
         driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
         driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -542,6 +553,7 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         Util.sendConsole("LeftPosition", driveLeftFrontMotor.getSelectedSensorPosition()+"");
         Util.sendConsole("RightPosition",driveRightFrontMotor.getSelectedSensorPosition()+"");
+        Util.sendConsole("GyroAngle",gyro.getAngle()+"");
     }
 
     @Override
