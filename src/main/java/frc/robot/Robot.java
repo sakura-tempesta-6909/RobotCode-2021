@@ -276,6 +276,10 @@ public class Robot extends TimedRobot {
 
 
     public void teleopInit() {
+        if (drive != null) {
+            drive.setSafetyEnabled(false);
+        }
+
         state.controlMode = State.ControlMode.m_Drive;
         panelRotationMode.contractServo();
         
@@ -298,17 +302,6 @@ public class Robot extends TimedRobot {
         driveRightBackMotor.follow(driveRightFrontMotor);
 
         drive = new Drive(driveLeftFrontMotor, driveRightFrontMotor);
-    }
-
-    @Override
-    public void disabledInit() {
-        //super.disabledInit();
-         state.stateInit();
-        // drive.applyState(state);
-        // arm.applyState(state);
-         shooter.applyState(state);
-         intake.applyState(state);
-         intakeBelt.applyState(state);
     }
 
     @Override
@@ -549,5 +542,16 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {
         Util.sendConsole("LeftPosition", driveLeftFrontMotor.getSelectedSensorPosition()+"");
         Util.sendConsole("RightPosition",driveRightFrontMotor.getSelectedSensorPosition()+"");
+    }
+
+    @Override
+    public void disabledInit() {
+        //super.disabledInit();
+         state.stateInit();
+        // drive.applyState(state);
+        // arm.applyState(state);
+         shooter.applyState(state);
+         intake.applyState(state);
+         intakeBelt.applyState(state);
     }
 }
