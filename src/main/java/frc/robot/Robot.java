@@ -115,37 +115,35 @@ public class Robot extends TimedRobot {
         driveRightBackMotor = new VictorSPX(Const.DriveRightBackPort);
         driveLeftFrontMotor = new WPI_TalonSRX(Const.DriveLeftFrontPort);
         driveLeftBackMotor = new VictorSPX(Const.DriveLeftBackPort);
-
-        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-        //ドライブモーターの台形加速&フォローの設定
-        driveLeftFrontMotor.configOpenloopRamp(Const.DriveFullSpeedTime);
-        driveLeftBackMotor.follow(driveLeftFrontMotor);
-        driveRightFrontMotor.configOpenloopRamp(Const.DriveFullSpeedTime);
+        // 初期化
+        driveLeftFrontMotor.configFactoryDefault();
+        driveRightFrontMotor.configFactoryDefault();
+        driveRightBackMotor.configFactoryDefault();
+        driveLeftBackMotor.configFactoryDefault();
+        // エンコーダ
+        driveLeftFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
+        driveRightFrontMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
+        // エンコーダの反転修正
+        driveLeftFrontMotor.setSensorPhase(true);
+        driveRightFrontMotor.setSensorPhase(true);
+        // フォローの設定
         driveRightBackMotor.follow(driveRightFrontMotor);
+        driveLeftBackMotor.follow(driveLeftFrontMotor);
 
         //シューターの設定を初期化
         shooterRightMotor.configFactoryDefault();
         shooterLeftMotor.configFactoryDefault();
-
         //シューターのPIDの設定
-        shooterLeftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
-                Const.kPIDLoopIdx,
-                Const.kTimeoutMs);
-        shooterRightMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
-                Const.kPIDLoopIdx,
-                Const.kTimeoutMs);
-
+        shooterLeftMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Const.kPIDLoopIdx, Const.kTimeoutMs);
+        shooterRightMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Const.kPIDLoopIdx, Const.kTimeoutMs);
         shooterLeftMotor.config_kF(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kF, Const.kTimeoutMs);
         shooterLeftMotor.config_kP(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kP, Const.kTimeoutMs);
         shooterLeftMotor.config_kI(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kI, Const.kTimeoutMs);
         shooterLeftMotor.config_kD(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kD, Const.kTimeoutMs);
-
         shooterRightMotor.config_kF(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kF, Const.kTimeoutMs);
         shooterRightMotor.config_kP(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kP, Const.kTimeoutMs);
         shooterRightMotor.config_kI(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kI, Const.kTimeoutMs);
         shooterRightMotor.config_kD(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.kD, Const.kTimeoutMs);
-
         shooterLeftMotor.configMaxIntegralAccumulator(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.MaxIntegralAccumulator);
         shooterRightMotor.configMaxIntegralAccumulator(Const.kPIDLoopIdx, Const.kGains_ShooterVelocity.MaxIntegralAccumulator);
         shooterRightMotor.setSensorPhase(true);
@@ -153,38 +151,17 @@ public class Robot extends TimedRobot {
 
         //Armの設定を初期化
         armMotor.configFactoryDefault();
-
         //ArmのPID設定
-        armMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog,
-                Const.kArmPIDLoopIdx,
-                Const.kTimeoutMs);
-
+        armMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, Const.kArmPIDLoopIdx, Const.kTimeoutMs);
         armMotor.config_kF(Const.kArmPIDLoopIdx, Const.kGains_ArmPosition.kF, Const.kTimeoutMs);
         armMotor.config_kP(Const.kArmPIDLoopIdx, Const.kGains_ArmPosition.kP, Const.kTimeoutMs);
         armMotor.config_kI(Const.kArmPIDLoopIdx, Const.kGains_ArmPosition.kI, Const.kTimeoutMs);
         armMotor.config_kD(Const.kArmPIDLoopIdx, Const.kGains_ArmPosition.kD, Const.kTimeoutMs);
-
         armMotor.configMaxIntegralAccumulator(Const.kPIDLoopIdx, Const.kGains_ArmPosition.MaxIntegralAccumulator);
-
+        // エンコーダの反転修正
         armMotor.setSensorPhase(true);
+        // モーターの反転修正
         armMotor.setInverted(true);
-        /*
-        初期値が確認できたら、削除予定
-        ShooterLeft.configNominalOutputForward(0, Const.kTimeoutMs);
-        shooterLeft.configNominalOutputReverse(0, Const.kTimeoutMs);
-        shooterLeft.configPeakOutputForward(1, Const.kTimeoutMs);
-        shooterLeft.configPeakOutputReverse(-1, Const.kTimeoutMs);
-        */
-
-        /*
-        初期値が確認できたら、削除予定
-        shooterRight.configNominalOutputForward(0, Const.kTimeoutMs);
-        shooterRight.configNominalOutputReverse(0, Const.kTimeoutMs);
-        shooterRight.configPeakOutputForward(1, Const.kTimeoutMs);
-        shooterRight.configPeakOutputReverse(-1, Const.kTimeoutMs);
-         */
-
-
 
         //サブクラスの生成
         armSensor = new ArmSensor(armMotor);
