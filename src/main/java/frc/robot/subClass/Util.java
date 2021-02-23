@@ -67,6 +67,6 @@ public class Util {
      */
     public static boolean isPositionAchievement(double driveRightPosition,double driveRightSetPosition,double driveLeftPosition,double driveLeftSetPosition){
         Util.sendConsole("subtract",Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveLeftSetPosition)))+"");
-        return Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveLeftSetPosition))) < 200 && Math.abs(Math.subtractExact(Math.round(driveLeftPosition), Math.round(driveRightSetPosition))) < 200;
+        return Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveRightSetPosition))) < 200 && Math.abs(Math.subtractExact(Math.round(driveLeftPosition), Math.round(driveLeftSetPosition))) < 200;
     }
 }

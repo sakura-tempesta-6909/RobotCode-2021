@@ -264,7 +264,7 @@ public class Robot extends TimedRobot {
         Util.sendConsole("LeftPosition",state.driveLeftActualPosition +"");
         Util.sendConsole("RightPosition",state.driveRightActualPosition +"");
         state.autoDriveState = State.AutoDriveState.kAutoNavRed;
-        state.gyroAngle = gyro.getAngle();
+        state.gyroAngle = gyro.getAngle() % 360;
         state.gyroRate = gyro.getRate();
         arm.applyState(state);
         shooter.applyState(state);
