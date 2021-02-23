@@ -8,6 +8,7 @@ public class AutoNav {
 
     public AutoNavState autoNavStatus;
     private Double beforeGyroAngle = 0.0;
+    private int positionAchievementCount = 0;
 
     public AutoNav() {
         autoNavStatus = AutoNavState.waiting;
@@ -19,14 +20,17 @@ public class AutoNav {
         } else if (state.autoDriveState == State.AutoDriveState.kAutoNavRed) {
             switch (autoNavStatus) {
                 case waiting:
+                    phaseInit(state);
                     autoNavStatus = AutoNavState.phase1;
                     break;
                 case phase1:
-                    state.driveLeftSetPosition = 1000 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = 1000 * Const.quadraturePositionPerWheelCenti;
+                    state.driveLeftSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
+                    state.driveRightSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
                     if (isPositionAchievement(state)) {
-                        phaseInit(state);
-                        autoNavStatus = AutoNavState.phase2;
+                        if (true) {
+                            phaseInit(state);
+                            autoNavStatus = AutoNavState.phase2;
+                        }
                     }
                     break;
                 case phase2:
@@ -39,12 +43,25 @@ public class AutoNav {
                     }
                     break;
                 case phase3:
-                    if(Math.abs(state.gyroAngle - beforeGyroAngle)>85){
-                        phaseInit(state);
-                        autoNavStatus = AutoNavState.finish;
+                    if(Math.abs(state.gyroAngle - beforeGyroAngle)>180){
+                        //autoNavStatus = AutoNavState.finish;
+
+                        state.driveRightSetPosition = state.driveRightActualPosition;
+                        state.driveLeftSetPosition = state.driveLeftActualPosition;
+                        if(isPositionAchievement(state)) {
+                            if (positionAchievementCount == 1) {
+                                state.driveRightSetPosition = state.driveRightActualPosition;
+                                state.driveLeftSetPosition = state.driveLeftActualPosition;
+                            } else if (positionAchievementCount > 10) {
+                                phaseInit(state);
+                                autoNavStatus = AutoNavState.finish;
+                            }
+                        }
+
+                    }else{
+                        state.driveLeftSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
+                        state.driveRightSetPosition = -100 * Const.quadraturePositionPerWheelCenti;
                     }
-                    state.driveLeftSetPosition = 100 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = -100 * Const.quadraturePositionPerWheelCenti;
                     break;
                 case phase4:
                     break;
@@ -78,8 +95,25 @@ public class AutoNav {
         state.shooterState = State.ShooterState.doNothing;
         beforeGyroAngle = state.gyroAngle;
         state.is_intake_finish = false;
+        positionAchievementCount = 0;
     }
     private boolean isPositionAchievement(State state) {
-        return Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
+        boolean positionAchievement = Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
+        if(positionAchievement){
+            positionAchievementCount++;
+            return true;
+        }
+        positionAchievementCount = 0;
+        return false;
+        /*if (Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition)) {
+            positionAchievementCount++;
+            Util.sendConsole("count",positionAchievementCount + "");
+            return true;
+        } else {
+            return false;
+        }
+
+         */
     }
+
 }
