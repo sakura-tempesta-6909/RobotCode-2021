@@ -7,7 +7,7 @@ import frc.robot.subClass.Util;
 
 public class AutoDrive {
 
-    private final WPI_TalonSRX leftMotor,rightMotor;
+    private final WPI_TalonSRX leftMotor, rightMotor;
 
     public AutoDrive(WPI_TalonSRX leftMotor, WPI_TalonSRX rightMotor){
         this.leftMotor = leftMotor;

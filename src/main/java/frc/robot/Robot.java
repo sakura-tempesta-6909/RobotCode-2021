@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.robot.autonomous.AutoDrive;
 import frc.robot.autonomous.AutoNav;
 import frc.robot.autonomous.GalacticSearch;
@@ -216,16 +215,8 @@ public class Robot extends TimedRobot {
         driveRightBackMotor.setInverted(true);
 
         // PID値設定
-        driveLeftFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
         driveLeftFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
-        driveLeftFrontMotor.config_kI(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveLeftFrontMotor.config_kD(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-
-
-        driveRightFrontMotor.config_kF(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
         driveRightFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
-        driveRightFrontMotor.config_kI(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
-        driveRightFrontMotor.config_kD(Const.kArmPIDLoopIdx, 0, Const.kTimeoutMs);
 
         // フォローの設定
         driveRightBackMotor.follow(driveRightFrontMotor);
@@ -251,7 +242,7 @@ public class Robot extends TimedRobot {
         state.stateInit();
         state.controlMode = State.ControlMode.m_Auto;
         state.autoDriveState = State.AutoDriveState.kAutoNavDoNothing;
-        autoNav.autoNavStatus = AutoNav.AutoNavStatus.waiting;
+        autoNav.autoNavStatus = AutoNav.AutoNavState.waiting;
         arm.applyState(state);
         shooter.applyState(state);
         intake.applyState(state);
@@ -263,20 +254,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        Util.isPositionAchievement(state.driveRightPosition, state.driveRightSetPosition, state.driveLeftPosition, state.driveLeftSetPosition);
-        state.driveRightPosition = autoDrive.getRightMotorPosition();
-        state.driveLeftPosition = autoDrive.getLeftMotorPosition();
-        Util.sendConsole("LeftPosition",state.driveLeftPosition+"");
-        Util.sendConsole("RightPosition",state.driveRightPosition+"");
-        //Util.sendConsole("SetPosition",state.driveLeftSetPosition+"");
-        //Util.sendConsole("AutoDriveMode",state.autoDriveState.toString());
+        Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
+        state.driveRightActualPosition = autoDrive.getRightMotorPosition();
+        state.driveLeftActualPosition = autoDrive.getLeftMotorPosition();
+        Util.sendConsole("LeftPosition",state.driveLeftActualPosition +"");
+        Util.sendConsole("RightPosition",state.driveRightActualPosition +"");
         state.autoDriveState = State.AutoDriveState.kAutoNavRed;
-<<<<<<< HEAD
         state.gyroAngle = gyro.getAngle();
         state.gyroRate = gyro.getRate();
-        // drive.applyState(state);
-=======
->>>>>>> 369fc80930b8ac8f48750de5df9fbaf56e432222
         arm.applyState(state);
         shooter.applyState(state);
         intake.applyState(state);

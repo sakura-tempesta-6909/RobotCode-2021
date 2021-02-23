@@ -7,7 +7,7 @@ public class State {
     /** driveStraightSpeed, driveRotateSpeed それぞれDriveMode時の真っ直ぐ進む成分, 回転する成分(PercentOutput) [-1, 1] */
     public double driveStraightSpeed, driveRotateSpeed;
     public double driveRightSetPosition,driveLeftSetPosition;
-    public double driveRightPosition,driveLeftPosition;
+    public double driveRightActualPosition, driveLeftActualPosition;
 
     public double gyroAngle;
     public double gyroRate;
@@ -86,8 +86,8 @@ public class State {
         driveLeftSetPosition = 0;
         driveRightSetPosition = 0;
 
-        driveLeftPosition = 0;
-        driveRightPosition = 0;
+        driveLeftActualPosition = 0;
+        driveRightActualPosition = 0;
 
         gyroAngle = 0;
         gyroRate = 0;

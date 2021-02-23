@@ -43,11 +43,11 @@ public class Const {
     public static final int kTimeoutMs = 30;
     public final static Gains kGains_ShooterVelocity = new Gains(0.01, 0.00005, 0, 0, 300, 1.00, 1023 / 0.00005);
     //In&Outtake
-    public final static double shooterIntakeSpeed = 0.05;
+    public final static double shooterIntakeSpeed = 0.165;
     public final static double shooterOutTakeSpeed = -0.2;
 
     //INTAKE MECANUM
-    public final static double intakeSpeed = 0.25;
+    public final static double intakeSpeed = 0.7;
     public final static double outtakeSpeed = -0.6;
 
     //CLIMB
