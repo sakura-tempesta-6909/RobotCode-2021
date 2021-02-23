@@ -276,6 +276,10 @@ public class Robot extends TimedRobot {
 
 
     public void teleopInit() {
+        if (drive != null) {
+            drive.setSafetyEnabled(false);
+        }
+
         state.controlMode = State.ControlMode.m_Drive;
         panelRotationMode.contractServo();
         
