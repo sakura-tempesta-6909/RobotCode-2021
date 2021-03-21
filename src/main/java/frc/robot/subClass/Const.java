@@ -79,7 +79,7 @@ public class Const {
     public static final double armPointDifference = armMaxPoint - armMinPoint;
     public static final double armMaxOffset = 0.13;
     //PID
-    public final static Gains kGains_ArmPosition = new Gains(8, 0.01, 10, 0, (int) (0.5 * 1025 / 8), 1.00, 0.15 * 1023 / 0.01);
+    public static final Gains kGains_ArmPosition = new Gains(8, 0.01, 10, 0, (int) (0.5 * 1025 / 8), 1.00, 0.15 * 1023 / 0.01);
     public static final int kArmPIDLoopIdx = 0;
 
     //以下立崎追記分（完成したら整理します）
@@ -119,4 +119,8 @@ public class Const {
     public static final double circumferenceOfWheelCenti = 47.87787204;
     public static final double quadraturePositionOfWheel = 4132;
     public static final double quadraturePositionPerWheelCenti = quadraturePositionOfWheel / circumferenceOfWheelCenti;
+    public static final Gains kGains_AutoDriveStraight = new Gains(0.1, 0, 0.05, 0, 0, 0.8, 0.0);
+    public static final Gains kGains_AutoDriveTurn = new Gains(0.0, 0, 0.0, 0, 0, 0.8, 0.0);
+    public static final int kDriveStraightPIDLoopIdx = 0;
+    public static final int kDriveTurnPIDLoopIdx = 1;
 }
