@@ -215,12 +215,23 @@ public class Robot extends TimedRobot {
         driveRightBackMotor.setInverted(true);
 
         // PID値設定
-        driveLeftFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
-        driveRightFrontMotor.config_kP(Const.kArmPIDLoopIdx, 0.2, Const.kTimeoutMs);
-
+        //直進
+        driveLeftFrontMotor.config_kP(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kP, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kP(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kP, Const.kTimeoutMs);
+        driveLeftFrontMotor.config_kD(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kD, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kD(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kD, Const.kTimeoutMs);
         //最大速度の制限
-        driveLeftFrontMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,0.8);
-        driveRightFrontMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,0.8);
+        driveLeftFrontMotor.configClosedLoopPeakOutput(Const.kDriveStraightPIDLoopIdx,Const.kGains_AutoDriveStraight.kPeakOutput);
+        driveRightFrontMotor.configClosedLoopPeakOutput(Const.kDriveStraightPIDLoopIdx,Const.kGains_AutoDriveStraight.kPeakOutput);
+
+        //曲がる
+        driveLeftFrontMotor.config_kP(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kP, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kP(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kP, Const.kTimeoutMs);
+        driveLeftFrontMotor.config_kD(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kD, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kD(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kD, Const.kTimeoutMs);
+        //最大速度の制限
+        driveLeftFrontMotor.configClosedLoopPeakOutput(Const.kDriveTurnPIDLoopIdx,Const.kGains_AutoDriveTurn.kPeakOutput);
+        driveRightFrontMotor.configClosedLoopPeakOutput(Const.kDriveTurnPIDLoopIdx,Const.kGains_AutoDriveTurn.kPeakOutput);
 
         // フォローの設定
         driveRightBackMotor.follow(driveRightFrontMotor);

@@ -97,11 +97,11 @@ public class GalacticSearch {
         phase13(13),
         finish(14);
         private final int id;
-        private final GalacticSearchState[] all = GalacticSearchState.values();
 
         GalacticSearchState(int id) {this.id = id;}
 
         public GalacticSearchState next() {
+            final GalacticSearchState[] all = GalacticSearchState.values();
             for(GalacticSearchState state:all) {
                 if(state.id == this.id+1) {
                     return state;
