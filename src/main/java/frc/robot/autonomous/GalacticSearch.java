@@ -14,174 +14,6 @@ public class GalacticSearch {
         galacticSearchState = GalacticSearchState.waiting;
     }
 
-    public void applyState(State state) {
-        if (state.autoDriveState == State.AutoDriveState.kGalacticSearchRed) {
-
-        } else if (state.autoDriveState == State.AutoDriveState.kGalacticSearchBlue) {
-            switch (galacticSearchState) {
-                case waiting:
-                    phaseInit(state);
-                    galacticSearchState = GalacticSearchState.phase1;
-                    break;
-                case phase1:
-                    state.driveLeftSetPosition = beforeSetLeftPosition + 457 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = beforeSetRightPosition + 457 * Const.quadraturePositionPerWheelCenti;
-                    if (isPositionAchievement(state)) {
-                        if (positionAchievementCount >10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase2;
-                        }
-                    }
-                    break;
-                case phase2:
-                case phase10:
-                    state.intakeState = State.IntakeState.kIntake;
-                    state.intakeBeltState = State.IntakeBeltState.kIntake;
-                    state.shooterState = State.ShooterState.kIntake;
-                    if(state.is_intake_finish){
-                        phaseInit(state);
-                        galacticSearchState = GalacticSearchState.phase3;
-                    }
-                    break;
-                case phase3:
-                    state.driveLeftSetPosition = beforeSetLeftPosition + 70 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = beforeSetRightPosition + 70 * Const.quadraturePositionPerWheelCenti;
-                    if (isPositionAchievement(state)) {
-                        if (positionAchievementCount >10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase2;
-                        }
-                    }
-                    break;
-                case phase4:
-                case phase11:
-                    if(isAngleAchievement(state,90)){
-                        if (angleAchievementCount == 1) {
-                            state.driveRightSetPosition = state.driveRightActualPosition;
-                            state.driveLeftSetPosition = state.driveLeftActualPosition;
-                            beforeSetLeftPosition = state.driveLeftSetPosition;
-                            beforeSetRightPosition = state.driveRightSetPosition;
-                        } else if (angleAchievementCount > 10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase4;
-                        }
-                    }else{
-                        state.loopPeakOutput = 0.5;
-                        state.driveLeftSetPosition =  beforeSetLeftPosition + (90 - (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
-                        state.driveRightSetPosition = beforeSetRightPosition - (90- (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
-                        beforeSetRightPosition = state.driveRightSetPosition;
-                        beforeSetLeftPosition = state.driveLeftSetPosition;
-                    }
-                    break;
-                case phase5:
-                    state.driveLeftSetPosition = beforeSetLeftPosition + 220 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = beforeSetRightPosition + 220 * Const.quadraturePositionPerWheelCenti;
-                    if (isPositionAchievement(state)) {
-                        if (positionAchievementCount >10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase5;
-                        }
-                    }
-                    break;
-                case phase6:
-                    if(isAngleAchievement(state,-90)){
-                    if (angleAchievementCount == 1) {
-                        state.driveRightSetPosition = state.driveRightActualPosition;
-                        state.driveLeftSetPosition = state.driveLeftActualPosition;
-                        beforeSetLeftPosition = state.driveLeftSetPosition;
-                        beforeSetRightPosition = state.driveRightSetPosition;
-                    } else if (angleAchievementCount > 10) {
-                        phaseInit(state);
-                        galacticSearchState = GalacticSearchState.phase4;
-                    }
-                }else{
-                    state.loopPeakOutput = 0.5;
-                    state.driveLeftSetPosition =  beforeSetLeftPosition + (-90 - (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = beforeSetRightPosition - (-90- (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
-                    beforeSetRightPosition = state.driveRightSetPosition;
-                    beforeSetLeftPosition = state.driveLeftSetPosition;
-                }
-                    break;
-                case phase7:
-                    state.driveLeftSetPosition = beforeSetLeftPosition + 150 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = beforeSetRightPosition + 150 * Const.quadraturePositionPerWheelCenti;
-                    if (isPositionAchievement(state)) {
-                        if (positionAchievementCount >10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase5;
-                        }
-                    }
-                    break;
-                case phase8:
-                    if(isAngleAchievement(state,-90)){
-                        if (angleAchievementCount == 1) {
-                            state.driveRightSetPosition = state.driveRightActualPosition;
-                            state.driveLeftSetPosition = state.driveLeftActualPosition;
-                            beforeSetLeftPosition = state.driveLeftSetPosition;
-                            beforeSetRightPosition = state.driveRightSetPosition;
-                        } else if (angleAchievementCount > 10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase4;
-                        }
-                    }else{
-                        state.loopPeakOutput = 0.5;
-                        state.driveLeftSetPosition =  beforeSetLeftPosition + (-90 - (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
-                        state.driveRightSetPosition = beforeSetRightPosition - (-90- (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
-                        beforeSetRightPosition = state.driveRightSetPosition;
-                        beforeSetLeftPosition = state.driveLeftSetPosition;
-                    }
-                case phase9:
-                    state.driveLeftSetPosition = beforeSetLeftPosition + 70 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = beforeSetRightPosition + 70 * Const.quadraturePositionPerWheelCenti;
-                    if (isPositionAchievement(state)) {
-                        if (positionAchievementCount >10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase2;
-                        }
-                    }
-                    break;
-                case phase12:
-                    state.driveLeftSetPosition = beforeSetLeftPosition + 150 * Const.quadraturePositionPerWheelCenti;
-                    state.driveRightSetPosition = beforeSetRightPosition + 150 * Const.quadraturePositionPerWheelCenti;
-                    if (isPositionAchievement(state)) {
-                        if (positionAchievementCount >10) {
-                            phaseInit(state);
-                            galacticSearchState = GalacticSearchState.phase2;
-                        }
-                    }
-                    break;
-                case phase13:
-                    state.intakeState = State.IntakeState.kOuttake;
-                    state.intakeBeltState = State.IntakeBeltState.kOuttake;
-                    state.shooterState = State.ShooterState.kOuttake;
-                    break;
-                case finish:
-                    state.intakeState = State.IntakeState.doNothing;
-                    state.intakeBeltState = State.IntakeBeltState.doNothing;
-                    state.shooterState = State.ShooterState.doNothing;
-                    break;
-            }
-        }
-    }
-
-    public enum GalacticSearchState {
-        waiting,
-        phase1,
-        phase2,
-        phase3,
-        phase4,
-        phase5,
-        phase6,
-        phase7,
-        phase8,
-        phase9,
-        phase10,
-        phase11,
-        phase12,
-        phase13,
-        finish
-    }
-
     private void phaseInit(State state){
         state.intakeState = State.IntakeState.doNothing;
         state.intakeBeltState = State.IntakeBeltState.doNothing;
@@ -193,6 +25,140 @@ public class GalacticSearch {
         positionAchievementCount = 0;
         state.loopPeakOutput = 0.8;
     }
+
+    public void applyState(State state) {
+        if (state.autoDriveState == State.AutoDriveState.kGalacticSearchRed) {
+
+        } else if (state.autoDriveState == State.AutoDriveState.kGalacticSearchBlue) {
+            switch (galacticSearchState) {
+                case waiting:
+                    phaseInit(state);
+                    galacticSearchState = GalacticSearchState.phase1;
+                    break;
+                case phase1:
+                    PIDStraight(457, state);
+                    break;
+                case phase2:
+                case phase10:
+                    intake(state);
+                    break;
+                case phase3:
+                    PIDStraight(70, state);
+                    break;
+                case phase4:
+                case phase11:
+                    PIDTurn(90, state);
+                    break;
+                case phase5:
+                    PIDStraight(220, state);
+                    break;
+                case phase6:
+                    PIDTurn(-90, state);
+                    break;
+                case phase7:
+                    PIDStraight(150, state);
+                    break;
+                case phase8:
+                    PIDTurn(-90, state);
+                    break;
+                case phase9:
+                    PIDStraight(70, state);
+                    break;
+                case phase12:
+                    PIDStraight(150, state);
+                    break;
+                case phase13:
+                    outtake(state);
+                    break;
+                case finish:
+                    state.intakeState = State.IntakeState.doNothing;
+                    state.intakeBeltState = State.IntakeBeltState.doNothing;
+                    state.shooterState = State.ShooterState.doNothing;
+                    break;
+            }
+        }
+    }
+
+
+    public enum GalacticSearchState {
+        waiting(0),
+        phase1(1),
+        phase2(2),
+        phase3(3),
+        phase4(4),
+        phase5(5),
+        phase6(6),
+        phase7(7),
+        phase8(8),
+        phase9(9),
+        phase10(10),
+        phase11(11),
+        phase12(12),
+        phase13(13),
+        finish(14);
+        private final int id;
+        private final GalacticSearchState[] all = GalacticSearchState.values();
+
+        GalacticSearchState(int id) {this.id = id;}
+
+        public GalacticSearchState next() {
+            for(GalacticSearchState state:all) {
+                if(state.id == this.id+1) {
+                    return state;
+                }
+            }
+            return waiting;
+        }
+    }
+
+    private void PIDStraight(double relativePosition, State state) {
+        state.driveLeftSetPosition = beforeSetLeftPosition + relativePosition * Const.quadraturePositionPerWheelCenti;
+        state.driveRightSetPosition = beforeSetRightPosition + relativePosition * Const.quadraturePositionPerWheelCenti;
+        if (isPositionAchievement(state)) {
+            if (positionAchievementCount > 10) {
+                phaseInit(state);
+                galacticSearchState = galacticSearchState.next();
+            }
+        }
+    }
+
+    private void PIDTurn(int targetAngle, State state) {
+        if(isAngleAchievement(state,targetAngle)){
+            if (angleAchievementCount == 1) {
+                state.driveRightSetPosition = state.driveRightActualPosition;
+                state.driveLeftSetPosition = state.driveLeftActualPosition;
+                beforeSetLeftPosition = state.driveLeftSetPosition;
+                beforeSetRightPosition = state.driveRightSetPosition;
+            } else if (angleAchievementCount > 10) {
+                phaseInit(state);
+                galacticSearchState = galacticSearchState.next();
+            }
+        }else{
+            state.loopPeakOutput = 0.5;
+            state.driveLeftSetPosition =  beforeSetLeftPosition + (targetAngle - (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
+            state.driveRightSetPosition = beforeSetRightPosition - (targetAngle - (state.gyroAngle - beforeGyroAngle)) * 0.8 * Const.quadraturePositionPerWheelCenti;
+            beforeSetRightPosition = state.driveRightSetPosition;
+            beforeSetLeftPosition = state.driveLeftSetPosition;
+        }
+    }
+
+    private void intake(State state) {
+        state.intakeState = State.IntakeState.kIntake;
+        state.intakeBeltState = State.IntakeBeltState.kIntake;
+        state.shooterState = State.ShooterState.kIntake;
+        if(state.is_intake_finish){
+            phaseInit(state);
+            galacticSearchState = galacticSearchState.next();
+        }
+
+    }
+
+    private void outtake(State state) {
+        state.intakeState = State.IntakeState.kOuttake;
+        state.intakeBeltState = State.IntakeBeltState.kOuttake;
+        state.shooterState = State.ShooterState.kOuttake;
+    }
+
     private boolean isPositionAchievement(State state) {
         boolean positionAchievement = Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
         if(positionAchievement){
