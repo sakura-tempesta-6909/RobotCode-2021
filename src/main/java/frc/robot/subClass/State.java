@@ -9,6 +9,7 @@ public class State {
     public double driveRightSetPosition,driveLeftSetPosition;
     public double driveRightActualPosition, driveLeftActualPosition;
     public double loopPeakOutput;
+    public boolean isTurn;
 
     public double gyroAngle;
     public double gyroRate;
@@ -89,6 +90,8 @@ public class State {
 
         driveLeftActualPosition = 0;
         driveRightActualPosition = 0;
+
+        isTurn = false;
 
         loopPeakOutput = 0.8;
 

@@ -28,7 +28,47 @@ public class GalacticSearch {
 
     public void applyState(State state) {
         if (state.autoDriveState == State.AutoDriveState.kGalacticSearchRed) {
-
+            switch (galacticSearchState){
+                case waiting:
+                    phaseInit(state);
+                    galacticSearchState = GalacticSearchState.phase1;
+                    break;
+                case phase1:
+                    PIDStraight(152,state);
+                    break;
+                case phase2:
+                case phase5:
+                case phase10:
+                    intake(state);
+                    break;
+                case phase3:
+                    PIDTurn(27,state);
+                    break;
+                case phase4:
+                    PIDStraight(170,state);
+                    break;
+                case phase6:
+                    PIDTurn(-333,state);
+                    break;
+                case phase7:
+                    PIDStraight(228,state);
+                    break;
+                case phase8:
+                    PIDTurn(90,state);
+                    break;
+                case phase9:
+                    PIDStraight(76.2,state);
+                    break;
+                case phase11:
+                    PIDStraight(457,state);
+                    break;
+                case phase12:
+                    state.intakeState = State.IntakeState.doNothing;
+                    state.intakeBeltState = State.IntakeBeltState.doNothing;
+                    state.shooterState = State.ShooterState.doNothing;
+                    galacticSearchState = GalacticSearchState.finish;
+                    break;
+            }
         } else if (state.autoDriveState == State.AutoDriveState.kGalacticSearchBlue) {
             switch (galacticSearchState) {
                 case waiting:
@@ -39,36 +79,33 @@ public class GalacticSearch {
                     PIDStraight(457, state);
                     break;
                 case phase2:
-                case phase10:
                     intake(state);
                     break;
                 case phase3:
-                    PIDStraight(70, state);
+                    PIDStraight(76.2, state);
                     break;
                 case phase4:
-                case phase11:
-                    PIDTurn(90, state);
+                    PIDTurn(90,state);
                     break;
                 case phase5:
-                    PIDStraight(220, state);
+                    PIDStraight(228,state);
                     break;
                 case phase6:
-                    PIDTurn(-90, state);
+                    intake(state);
                     break;
                 case phase7:
-                    PIDStraight(150, state);
+                    PIDTurn(333,state);
                     break;
                 case phase8:
-                    PIDTurn(-90, state);
+                    PIDStraight(170,state);
                     break;
-                case phase9:
-                    PIDStraight(70, state);
+                case phase9:PIDTurn(-27,state);
+                    break;
+                case phase10:
+                    PIDStraight(152,state);
                     break;
                 case phase12:
-                    PIDStraight(150, state);
-                    break;
-                case phase13:
-                    outtake(state);
+                    galacticSearchState = GalacticSearchState.finish;
                     break;
                 case finish:
                     state.intakeState = State.IntakeState.doNothing;
@@ -114,6 +151,7 @@ public class GalacticSearch {
     private void PIDStraight(double relativePosition, State state) {
         state.driveLeftSetPosition = beforeSetLeftPosition + relativePosition * Const.quadraturePositionPerWheelCenti;
         state.driveRightSetPosition = beforeSetRightPosition + relativePosition * Const.quadraturePositionPerWheelCenti;
+        state.isTurn = false;
         if (isPositionAchievement(state)) {
             if (positionAchievementCount > 10) {
                 phaseInit(state);
@@ -123,6 +161,7 @@ public class GalacticSearch {
     }
 
     private void PIDTurn(int targetAngle, State state) {
+        state.isTurn = true;
         if(isAngleAchievement(state,targetAngle)){
             if (angleAchievementCount == 1) {
                 state.driveRightSetPosition = state.driveRightActualPosition;
