@@ -66,7 +66,11 @@ public class Util {
      * @return 目標値に到達しているか
      */
     public static boolean isPositionAchievement(double driveRightPosition,double driveRightSetPosition,double driveLeftPosition,double driveLeftSetPosition){
+        return isPositionAchievement(driveRightPosition,driveRightSetPosition,driveLeftPosition,driveLeftSetPosition,1500);
+    }
+
+    public static boolean isPositionAchievement(double driveRightPosition,double driveRightSetPosition,double driveLeftPosition,double driveLeftSetPosition,double threhold){
         Util.sendConsole("subtract",Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveLeftSetPosition)))+"");
-        return Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveRightSetPosition))) < 200 && Math.abs(Math.subtractExact(Math.round(driveLeftPosition), Math.round(driveLeftSetPosition))) < 200;
+        return Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveRightSetPosition))) < threhold && Math.abs(Math.subtractExact(Math.round(driveLeftPosition), Math.round(driveLeftSetPosition))) < threhold;
     }
 }

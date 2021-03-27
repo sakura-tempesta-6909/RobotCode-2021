@@ -9,7 +9,7 @@ public class State {
     public double driveRightSetPosition,driveLeftSetPosition;
     public double driveRightActualPosition, driveLeftActualPosition;
     public double loopPeakOutput;
-    public boolean isTurn;
+    public boolean isTurn,isResetPID;
 
     public double gyroAngle;
     public double gyroRate;
@@ -92,6 +92,7 @@ public class State {
         driveRightActualPosition = 0;
 
         isTurn = false;
+        isResetPID = false;
 
         loopPeakOutput = 0.8;
 
@@ -170,7 +171,8 @@ public class State {
         kIntake,
         kOuttake,
         doNothing,
-        kDrive
+        kDrive,
+        kAutoIntake
     }
 
     public enum IntakeBeltState {
