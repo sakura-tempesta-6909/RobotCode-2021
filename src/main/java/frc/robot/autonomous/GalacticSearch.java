@@ -49,7 +49,7 @@ public class GalacticSearch {
                 case phase4:
                     PIDStraight(76.2,state);
                     break;
-                case phase5:accuracy
+                case phase5:
                     PIDStraight(152,state);
                 case phase7:
                     PIDTurn(90,state);
