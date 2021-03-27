@@ -22,13 +22,11 @@ public class GalacticSearch {
         beforeSetRightPosition = state.driveRightSetPosition;
         beforeSetLeftPosition = state.driveLeftSetPosition;
         state.is_intake_finish = false;
-        state.isTurn = false;
         positionAchievementCount = 0;
         state.loopPeakOutput = 0.8;
     }
 
     public void applyState(State state) {
-        System.out.println("statusssss"+galacticSearchState.toString());
         if (state.autoDriveState == State.AutoDriveState.kGalacticSearchRed) {
             switch (galacticSearchState){
                 case waiting:
@@ -39,34 +37,32 @@ public class GalacticSearch {
                     PIDStraight(152,state);
                     break;
                 case phase2:
-                case phase6:
-                case phase11:
+                case phase5:
+                case phase10:
                     intake(state);
                     break;
                 case phase3:
-                    PIDTurn(-90,state);
+                    PIDTurn(27,state);
                     break;
                 case phase4:
-                    PIDStraight(76.2,state);
+                    PIDStraight(170,state);
                     break;
-                case phase5:accuracy
-                    PIDStraight(152,state);
+                case phase6:
+                    PIDTurn(-333,state);
+                    break;
                 case phase7:
-                    PIDTurn(90,state);
-                    break;
-                case phase8:
                     PIDStraight(228,state);
                     break;
-                case phase9:
+                case phase8:
                     PIDTurn(90,state);
                     break;
-                case phase10:
+                case phase9:
                     PIDStraight(76.2,state);
                     break;
-                case phase12:
+                case phase11:
                     PIDStraight(457,state);
                     break;
-                case phase13:
+                case phase12:
                     state.intakeState = State.IntakeState.doNothing;
                     state.intakeBeltState = State.IntakeBeltState.doNothing;
                     state.shooterState = State.ShooterState.doNothing;
@@ -148,7 +144,7 @@ public class GalacticSearch {
                     return state;
                 }
             }
-            return phase2;
+            return waiting;
         }
     }
 
@@ -174,7 +170,7 @@ public class GalacticSearch {
                 beforeSetRightPosition = state.driveRightSetPosition;
             } else if (angleAchievementCount > 10) {
                 phaseInit(state);
-                //galacticSearchState = galacticSearchState.next();
+                galacticSearchState = galacticSearchState.next();
             }
         }else{
             state.loopPeakOutput = 0.5;
@@ -206,7 +202,6 @@ public class GalacticSearch {
         boolean positionAchievement = Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
         if(positionAchievement){
             positionAchievementCount++;
-            Util.sendConsole("yessss","kehffohifwfiwefwijfi2ur8yyru3ru3ru3ru3");
             return true;
         }
         positionAchievementCount = 0;
