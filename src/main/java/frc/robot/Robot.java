@@ -218,6 +218,8 @@ public class Robot extends TimedRobot {
         //直進
         driveLeftFrontMotor.config_kP(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kP, Const.kTimeoutMs);
         driveRightFrontMotor.config_kP(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kP, Const.kTimeoutMs);
+        driveLeftFrontMotor.config_kI(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kI, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kI(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kI, Const.kTimeoutMs);
         driveLeftFrontMotor.config_kD(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kD, Const.kTimeoutMs);
         driveRightFrontMotor.config_kD(Const.kDriveStraightPIDLoopIdx, Const.kGains_AutoDriveStraight.kD, Const.kTimeoutMs);
         //最大速度の制限
@@ -227,6 +229,8 @@ public class Robot extends TimedRobot {
         //曲がる
         driveLeftFrontMotor.config_kP(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kP, Const.kTimeoutMs);
         driveRightFrontMotor.config_kP(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kP, Const.kTimeoutMs);
+        driveLeftFrontMotor.config_kI(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kI, Const.kTimeoutMs);
+        driveRightFrontMotor.config_kI(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kI, Const.kTimeoutMs);
         driveLeftFrontMotor.config_kD(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kD, Const.kTimeoutMs);
         driveRightFrontMotor.config_kD(Const.kDriveTurnPIDLoopIdx, Const.kGains_AutoDriveTurn.kD, Const.kTimeoutMs);
         //最大速度の制限
@@ -565,6 +569,7 @@ public class Robot extends TimedRobot {
         Util.sendConsole("LeftPosition", driveLeftFrontMotor.getSelectedSensorPosition()+"");
         Util.sendConsole("RightPosition",driveRightFrontMotor.getSelectedSensorPosition()+"");
         Util.sendConsole("GyroAngle",gyro.getAngle()+"");
+        Util.sendConsole("LeftSetPoint",state.driveLeftSetPosition+"");
     }
 
     @Override

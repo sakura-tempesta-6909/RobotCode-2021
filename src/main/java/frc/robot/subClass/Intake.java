@@ -23,7 +23,9 @@ public class Intake {
                 setSpeed(0);
                 break;
             case kDrive:
-                setSpeed(0.20);
+                setSpeed(0.10);
+            case kAutoIntake:
+                setSpeed(-0.85);
         }
     }
 
