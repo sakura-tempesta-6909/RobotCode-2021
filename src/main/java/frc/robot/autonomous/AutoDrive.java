@@ -17,8 +17,13 @@ public class AutoDrive {
 
     public void applyState(State state) {
         if (state.controlMode == State.ControlMode.m_Auto) {
-            leftMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,state.loopPeakOutput);
-            rightMotor.configClosedLoopPeakOutput(Const.kArmPIDLoopIdx,state.loopPeakOutput);
+            if(state.isTurn) {
+                leftMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 0);
+                rightMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 0);
+            }else{
+                leftMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 1);
+                rightMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 1);
+            }
             switch (state.autoDriveState){
                 case kAutoNavRed:
                 case kAutoNavBlue:
