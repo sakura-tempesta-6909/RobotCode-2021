@@ -195,12 +195,13 @@ public class GalacticSearch {
         //state.driveLeftSetPosition = beforeSetLeftPosition + Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
         //state.driveRightSetPosition = beforeSetRightPosition - Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
         if(!isAchievement) {
-            state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4000.0 / 90.0 + accumulator * 0.55;
-            state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4000.0 / 90.0 - accumulator * 0.55;
+            state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4000.0 / 90.0 + accumulator * 0.52;
+            state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4000.0 / 90.0 - accumulator * 0.52;
         }else if(angleNotAchievementCount ==  -5){
             Util.sendConsole("hehehehehehe","setsetsetset");
             state.driveRightSetPosition = state.driveRightActualPosition - angleDif(state,targetAngle);
             state.driveLeftSetPosition = state.driveLeftActualPosition + angleDif(state,targetAngle);
+            angleNotAchievementCount = -100;
         }else{
             Util.sendConsole("jsjsj","uhwihqef");
             angleNotAchievementCount --;
