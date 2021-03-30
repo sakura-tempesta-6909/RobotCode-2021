@@ -3,12 +3,15 @@ package frc.robot.autonomous;
 import frc.robot.subClass.Const;
 import frc.robot.subClass.State;
 import frc.robot.subClass.Util;
+import org.opencv.core.Mat;
 
 public class GalacticSearch {
 
     private GalacticSearchState galacticSearchState;
     private double beforeGyroAngle=0.0 ,beforeSetLeftPosition=0.0,beforeSetRightPosition= 0.0;
-    private int positionAchievementCount = 0,angleAchievementCount = 0;
+    private int positionAchievementCount = 0,angleAchievementCount = 0,angleNotAchievementCount = 0;;
+    private double accumulator = 0;
+    private boolean isAchievement = false;
 
     public GalacticSearch() {
         galacticSearchState = GalacticSearchState.waiting;
@@ -26,10 +29,12 @@ public class GalacticSearch {
         positionAchievementCount = 0;
         state.loopPeakOutput = 0.8;
         state.isResetPID = true;
+        accumulator = 0;
+        isAchievement = false;
     }
 
     public void applyState(State state) {
-        System.out.println("statusssss"+galacticSearchState.toString());
+        //System.out.println("statusssss"+galacticSearchState.toString());
         if (state.autoDriveState == State.AutoDriveState.kGalacticSearchRed) {
             switch (galacticSearchState){
                 case waiting:
@@ -40,7 +45,8 @@ public class GalacticSearch {
                     PIDStraight(152,state);
                     break;
                 case phase2:
-                    intake(state);
+                    //intake(state);
+                    PIDTurn(90,state);
                     break;
                 case phase3:
                     PIDTurn(90,state);
@@ -167,24 +173,49 @@ public class GalacticSearch {
         state.driveRightSetPosition = beforeSetRightPosition + relativePosition * Const.quadraturePositionPerWheelCenti;
         state.isTurn = false;
         if (isPositionAchievement(state)) {
-            if (positionAchievementCount > 10) {
+            if (positionAchievementCount > 30) {
                 phaseInit(state);
                 galacticSearchState = galacticSearchState.next();
             }
         }
     }
 
+    private double transformAngle(double angle) {
+        angle %= 360;
+        if(angle > 180) {
+            angle = -(angle-180)+180;
+        }
+        return angle;
+    }
+
     private void PIDTurn(int targetAngle, State state) {
         state.isTurn = true;
+        // beforeGyroAngle = state.gyroAngle;
+        accumulator += transformAngle(targetAngle-state.gyroAngle);
         //state.driveLeftSetPosition = beforeSetLeftPosition + Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
         //state.driveRightSetPosition = beforeSetRightPosition - Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
-        state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4000/90;
-        state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4000 / 90;
-        if(isPositionAchievement(state)){
-            if (positionAchievementCount > 10) {
+        if(!isAchievement) {
+            state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4000.0 / 90.0 + accumulator * 0.55;
+            state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4000.0 / 90.0 - accumulator * 0.55;
+        }else if(angleNotAchievementCount ==  -5){
+            Util.sendConsole("hehehehehehe","setsetsetset");
+            state.driveRightSetPosition = state.driveRightActualPosition - angleDif(state,targetAngle);
+            state.driveLeftSetPosition = state.driveLeftActualPosition + angleDif(state,targetAngle);
+        }else{
+            Util.sendConsole("jsjsj","uhwihqef");
+            angleNotAchievementCount --;
+        }
+        if(isAngleAchievement(state, targetAngle)){
+            Util.sendConsole("isisisisisisis","isisisisisisi");
+            if (angleAchievementCount > 10) {
                 phaseInit(state);
                 galacticSearchState = galacticSearchState.next();
             }
+            if(!isAchievement){
+                state.driveRightSetPosition = state.driveRightActualPosition + Math.signum(targetAngle) * 5;
+                state.driveLeftSetPosition = state.driveLeftActualPosition - Math.signum(targetAngle) * 5;
+            }
+            isAchievement = true;
         }
     }
 
@@ -208,7 +239,7 @@ public class GalacticSearch {
     private boolean isPositionAchievement(State state) {
         boolean positionAchievement;
         if(state.isTurn){
-            positionAchievement = Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition,400);
+            positionAchievement = Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition,200);
         }else{
             positionAchievement = Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
         }
@@ -222,12 +253,17 @@ public class GalacticSearch {
     }
 
     private boolean isAngleAchievement(State state,int angle){
-        if(Math.abs(Math.subtractExact(Math.round(Math.abs(state.gyroAngle - beforeGyroAngle) % 360),angle)) < 5){
+        Util.sendConsole("angleDif", ""+Math.abs(Math.subtractExact((int) transformAngle(state.gyroAngle - beforeGyroAngle),angle)));
+        if(Math.abs(Math.subtractExact((int) transformAngle(state.gyroAngle - beforeGyroAngle),angle)) <= 5){
             angleAchievementCount++;
             return true;
         }
         angleAchievementCount = 0;
         return false;
+    }
+
+    private double angleDif(State state,int angle){
+        return transformAngle(state.gyroAngle - beforeGyroAngle) - angle;
     }
 }
 

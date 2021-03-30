@@ -278,7 +278,7 @@ public class Robot extends TimedRobot {
         state.driveLeftActualPosition = autoDrive.getLeftMotorPosition();
         Util.sendConsole("LeftPosition",state.driveLeftActualPosition +"");
         Util.sendConsole("RightPosition",state.driveRightActualPosition +"");
-        state.autoDriveState = State.AutoDriveState.kAutoNavRed;
+        state.autoDriveState = State.AutoDriveState.kGalacticSearchRed;
         state.gyroAngle = gyro.getAngle() % 360;
         state.gyroRate = gyro.getRate();
         arm.applyState(state);
@@ -574,12 +574,36 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+
+        if(state != null && drive != null) {
+        state.driveState = State.DriveState.kStop;
+        drive.applyState(state);
+        }
+
+        if(state.controlMode != null) {
+            if (state.controlMode == State.ControlMode.m_Auto) {
+                autonomousInit();
+                state.stateInit();
+                state.controlMode = State.ControlMode.m_Auto;
+            }else{
+                state.stateInit();
+            }
+        }else {
+            state.stateInit();
+        }
+
         //super.disabledInit();
-         state.stateInit();
         // drive.applyState(state);
         // arm.applyState(state);
          shooter.applyState(state);
          intake.applyState(state);
          intakeBelt.applyState(state);
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        if (state.controlMode == State.ControlMode.m_Auto) {
+            autonomousInit();
+        }
     }
 }
