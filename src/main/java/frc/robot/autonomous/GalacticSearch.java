@@ -222,8 +222,7 @@ public class GalacticSearch {
         state.intakeState = State.IntakeState.kAutoIntake;
         state.intakeBeltState = State.IntakeBeltState.kIntake;
         state.shooterState = State.ShooterState.kIntake;
-        angleAchievementCount ++;
-        if(state.is_intake_finish || angleAchievementCount >10) {
+        if(state.is_intake_finish) {
             phaseInit(state);
             galacticSearchState = galacticSearchState.next();
         }
