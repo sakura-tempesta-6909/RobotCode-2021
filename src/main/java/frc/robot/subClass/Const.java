@@ -44,7 +44,7 @@ public class Const {
     public final static Gains kGains_ShooterVelocity = new Gains(0.01, 0.00005, 0, 0, 300, 1.00, 1023 / 0.00005);
     //In&Outtake
     //public final static double shooterIntakeSpeed = 0.165;
-    public final static double shooterIntakeSpeed = 0.2;
+    public final static double shooterIntakeSpeed = 0.25;
     public final static double shooterOutTakeSpeed = -0.2;
 
     //INTAKE MECANUM
