@@ -202,17 +202,17 @@ public class GalacticSearch {
         //state.driveLeftSetPosition = beforeSetLeftPosition + Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
         //state.driveRightSetPosition = beforeSetRightPosition - Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
         if(!isAchievement) {
-            state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4000.0 / 90.0 + accumulator * 0.5;
-            state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4000.0 / 90.0 - accumulator * 0.5;
+            state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4300.0 / 90.0 + accumulator * 0.4;
+            state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4300.0 / 90.0 - accumulator * 0.4;
             angleAchievementCount = 0;
         }else if(angleNotAchievementCount ==  -5){
-            state.driveRightSetPosition = state.driveRightActualPosition - angleDif(state,targetAngle) * 30;
-            state.driveLeftSetPosition = state.driveLeftActualPosition + angleDif(state,targetAngle) * 30;
+            state.driveRightSetPosition = state.driveRightActualPosition - angleDif(state,targetAngle) * 38;
+            state.driveLeftSetPosition = state.driveLeftActualPosition + angleDif(state,targetAngle) * 38;
             angleNotAchievementCount = -100;
         }else{
             angleNotAchievementCount --;
         }
-        Util.sendConsole("countcont",angleNotAchievementCount+"");
+        Util.sendConsole("countcont",angleNotAchievementCount);
         if(isAngleAchievement(state, targetAngle)){
             if (angleAchievementCount > 10) {
                 phaseInit(state);
@@ -227,14 +227,19 @@ public class GalacticSearch {
     }
 
     private void intake(State state) {
+        /*
+        phaseInit(state);
+        galacticSearchState = galacticSearchState.next();
+        */
+
         state.intakeState = State.IntakeState.kAutoIntake;
         state.intakeBeltState = State.IntakeBeltState.kIntake;
         state.shooterState = State.ShooterState.kIntake;
         if(state.is_intake_finish) {
-            angleNotAchievementCount = 0;
             phaseInit(state);
             galacticSearchState = galacticSearchState.next();
         }
+
     }
 
     private void outtake(State state) {
@@ -259,8 +264,8 @@ public class GalacticSearch {
     }
 
     private boolean isAngleAchievement(State state,int angle){
-        Util.sendConsole("angleDif", ""+Math.abs(Math.subtractExact((int) transformAngle(state.gyroAngle - beforeGyroAngle),angle)));
-        Util.sendConsole("angle",state.gyroAngle+"");
+        Util.sendConsole("angleDif", Math.abs(Math.subtractExact((int) transformAngle(state.gyroAngle - beforeGyroAngle),angle)));
+        Util.sendConsole("angle",state.gyroAngle);
         if(Math.abs(Math.subtractExact((int) transformAngle(state.gyroAngle - beforeGyroAngle),angle)) <= 5){
             angleAchievementCount++;
             return true;
@@ -270,7 +275,7 @@ public class GalacticSearch {
     }
 
     private double angleDif(State state,int angle){
-        return transformAngle(state.gyroAngle - beforeGyroAngle) - angle;
+        return transformAngle(transformAngle(state.gyroAngle - beforeGyroAngle) - angle);
     }
 }
 
