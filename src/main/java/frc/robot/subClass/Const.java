@@ -120,8 +120,8 @@ public class Const {
     public static final double circumferenceOfWheelCenti = 47.87787204;
     public static final double quadraturePositionOfWheel = 4132;
     public static final double quadraturePositionPerWheelCenti = quadraturePositionOfWheel / circumferenceOfWheelCenti;
-    public static final Gains kGains_AutoDriveStraight = new Gains(0.0875, 0.00003 * 2, 0.1 * 2.2, 0, 0, 0.7, 0.0);
-    public static final Gains kGains_AutoDriveTurn = new Gains(1 , 0, 0.9 , 0, 0, 0.6, 0.0);
+    public static final Gains kGains_AutoDriveStraight = new Gains(0.0875, 0.00003 * 2.2, 0.1 * 2.4, 0, 0, 0.7, 0.0);
+    public static final Gains kGains_AutoDriveTurn = new Gains(1 , 0.00000001, 0.92 * 1.1 , 0, 0, 0.6, 0.0);
     public static final int kDriveStraightPIDLoopIdx = 0;
     public static final int kDriveTurnPIDLoopIdx = 1;
 }

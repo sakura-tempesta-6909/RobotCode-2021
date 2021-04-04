@@ -3,13 +3,12 @@ package frc.robot.autonomous;
 import frc.robot.subClass.Const;
 import frc.robot.subClass.State;
 import frc.robot.subClass.Util;
-import org.opencv.core.Mat;
 
 public class GalacticSearch {
 
     private GalacticSearchState galacticSearchState;
     private double beforeGyroAngle=0.0 ,beforeSetLeftPosition=0.0,beforeSetRightPosition= 0.0;
-    private int positionAchievementCount = 0,angleAchievementCount = 0,angleNotAchievementCount = 0;;
+    private int positionAchievementCount = 0,angleAchievementCount = 0;
     private double accumulator = 0;
     private boolean isAchievement = false;
 
@@ -34,8 +33,7 @@ public class GalacticSearch {
     }
 
     public void applyState(State state) {
-        Util.sendConsole("galaStatus",galacticSearchState.toString());
-        //System.out.println("statusssss"+galacticSearchState.toString());
+        Util.sendConsole("GalacticSearchStatus1",galacticSearchState.toString());
         if (state.autoDriveState == State.AutoDriveState.kGalacticSearchRed) {
             switch (galacticSearchState){
                 case waiting:
@@ -197,41 +195,30 @@ public class GalacticSearch {
 
     private void PIDTurn(int targetAngle, State state) {
         state.isTurn = true;
-        // beforeGyroAngle = state.gyroAngle;
-        accumulator += transformAngle(targetAngle-state.gyroAngle);
-        //state.driveLeftSetPosition = beforeSetLeftPosition + Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
-        //state.driveRightSetPosition = beforeSetRightPosition - Math.toRadians(targetAngle) * 35 * Const.quadraturePositionPerWheelCenti;
+        accumulator += Math.max(-10000, Math.min(transformAngle(targetAngle-transformAngle(state.gyroAngle)), 10000));
         if(!isAchievement) {
-            state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4300.0 / 90.0 + accumulator * 0.4;
-            state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4300.0 / 90.0 - accumulator * 0.4;
+            state.driveLeftSetPosition = beforeSetLeftPosition + targetAngle * 4000.0 / 90.0 + accumulator * 0.4;
+            state.driveRightSetPosition = beforeSetRightPosition - targetAngle * 4000.0 / 90.0 - accumulator * 0.4;
             angleAchievementCount = 0;
-        }else if(angleNotAchievementCount ==  -5){
-            state.driveRightSetPosition = state.driveRightActualPosition - angleDif(state,targetAngle) * 38;
-            state.driveLeftSetPosition = state.driveLeftActualPosition + angleDif(state,targetAngle) * 38;
-            angleNotAchievementCount = -100;
-        }else{
-            angleNotAchievementCount --;
+        } else{
+            state.driveRightSetPosition = state.driveRightSetPosition + accumulator*0.015;//angleDif(state,targetAngle) * 25;
+            state.driveLeftSetPosition = state.driveLeftSetPosition - accumulator * 0.015;
         }
-        Util.sendConsole("countcont",angleNotAchievementCount);
         if(isAngleAchievement(state, targetAngle)){
             if (angleAchievementCount > 10) {
                 phaseInit(state);
                 galacticSearchState = galacticSearchState.next();
             }
             if(!isAchievement){
-                state.driveRightSetPosition = state.driveRightActualPosition + Math.signum(targetAngle) * 5;
-                state.driveLeftSetPosition = state.driveLeftActualPosition - Math.signum(targetAngle) * 5;
+                state.driveRightSetPosition = state.driveRightActualPosition + Math.signum(targetAngle) * 20;
+                state.driveLeftSetPosition = state.driveLeftActualPosition - Math.signum(targetAngle) * 20;
+                accumulator = 0;
             }
             isAchievement = true;
         }
     }
 
     private void intake(State state) {
-        /*
-        phaseInit(state);
-        galacticSearchState = galacticSearchState.next();
-        */
-
         state.intakeState = State.IntakeState.kAutoIntake;
         state.intakeBeltState = State.IntakeBeltState.kIntake;
         state.shooterState = State.ShooterState.kIntake;
@@ -239,13 +226,6 @@ public class GalacticSearch {
             phaseInit(state);
             galacticSearchState = galacticSearchState.next();
         }
-
-    }
-
-    private void outtake(State state) {
-        state.intakeState = State.IntakeState.kOuttake;
-        state.intakeBeltState = State.IntakeBeltState.kOuttake;
-        state.shooterState = State.ShooterState.kOuttake;
     }
 
     private boolean isPositionAchievement(State state) {
