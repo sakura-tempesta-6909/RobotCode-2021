@@ -38,7 +38,7 @@ public class AutoNav {
                     break;
             }
         }
-        Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
+        //Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
     }
 
 

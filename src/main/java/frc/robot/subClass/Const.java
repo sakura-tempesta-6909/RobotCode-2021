@@ -44,7 +44,7 @@ public class Const {
     public final static Gains kGains_ShooterVelocity = new Gains(0.01, 0.00005, 0, 0, 300, 1.00, 1023 / 0.00005);
     //In&Outtake
     //public final static double shooterIntakeSpeed = 0.165;
-    public final static double shooterIntakeSpeed = 0.2;
+    public final static double shooterIntakeSpeed = 0.25;
     public final static double shooterOutTakeSpeed = -0.2;
 
     //INTAKE MECANUM
@@ -120,8 +120,8 @@ public class Const {
     public static final double circumferenceOfWheelCenti = 47.87787204;
     public static final double quadraturePositionOfWheel = 4132;
     public static final double quadraturePositionPerWheelCenti = quadraturePositionOfWheel / circumferenceOfWheelCenti;
-    public static final Gains kGains_AutoDriveStraight = new Gains(0.09, 0.00003, 0.05, 0, 0, 0.8, 0.0);
-    public static final Gains kGains_AutoDriveTurn = new Gains(1, 0.0000, 0.9, 0, 0, 0.75, 0.0);
+    public static final Gains kGains_AutoDriveStraight = new Gains(0.0875, 0.00003 * 2.2, 0.1 * 2.4, 0, 0, 0.7, 0.0);
+    public static final Gains kGains_AutoDriveTurn = new Gains(1 , 0.00000001, 0.92 * 1.1 , 0, 0, 0.6, 0.0);
     public static final int kDriveStraightPIDLoopIdx = 0;
     public static final int kDriveTurnPIDLoopIdx = 1;
 }

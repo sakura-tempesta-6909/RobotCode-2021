@@ -276,9 +276,9 @@ public class Robot extends TimedRobot {
         Util.isPositionAchievement(state.driveRightActualPosition, state.driveRightSetPosition, state.driveLeftActualPosition, state.driveLeftSetPosition);
         state.driveRightActualPosition = autoDrive.getRightMotorPosition();
         state.driveLeftActualPosition = autoDrive.getLeftMotorPosition();
-        Util.sendConsole("LeftPosition",state.driveLeftActualPosition +"");
-        Util.sendConsole("RightPosition",state.driveRightActualPosition +"");
-        state.autoDriveState = State.AutoDriveState.kAutoNavRed;
+        Util.sendConsole("LeftPosition",state.driveLeftActualPosition);
+        Util.sendConsole("RightPosition",state.driveRightActualPosition);
+        state.autoDriveState = State.AutoDriveState.kGalacticSearchRed;
         state.gyroAngle = gyro.getAngle() % 360;
         state.gyroRate = gyro.getRate();
         arm.applyState(state);
@@ -566,20 +566,44 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        Util.sendConsole("LeftPosition", driveLeftFrontMotor.getSelectedSensorPosition()+"");
-        Util.sendConsole("RightPosition",driveRightFrontMotor.getSelectedSensorPosition()+"");
+        Util.sendConsole("LeftPosition", driveLeftFrontMotor.getSelectedSensorPosition());
+        Util.sendConsole("RightPosition",driveRightFrontMotor.getSelectedSensorPosition());
         Util.sendConsole("GyroAngle",gyro.getAngle()+"");
-        Util.sendConsole("LeftSetPoint",state.driveLeftSetPosition+"");
+        Util.sendConsole("LeftSetPoint",state.driveLeftSetPosition);
     }
 
     @Override
     public void disabledInit() {
+
+        if(state != null && drive != null) {
+        state.driveState = State.DriveState.kStop;
+        drive.applyState(state);
+        }
+
+        if(state.controlMode != null) {
+            if (state.controlMode == State.ControlMode.m_Auto) {
+                autonomousInit();
+                state.stateInit();
+                state.controlMode = State.ControlMode.m_Auto;
+            }else{
+                state.stateInit();
+            }
+        }else {
+            state.stateInit();
+        }
+
         //super.disabledInit();
-         state.stateInit();
         // drive.applyState(state);
         // arm.applyState(state);
          shooter.applyState(state);
          intake.applyState(state);
          intakeBelt.applyState(state);
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        if (state.controlMode == State.ControlMode.m_Auto) {
+            autonomousInit();
+        }
     }
 }
