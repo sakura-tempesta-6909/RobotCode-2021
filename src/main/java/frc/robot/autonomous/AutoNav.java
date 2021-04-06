@@ -11,6 +11,7 @@ public class AutoNav {
     private int positionAchievementCount = 0,angleAchievementCount = 0;
     private double accumulator = 0;
     private boolean isAchievement = false;
+    private final double ThirtyInch = 30 * 2.54;
 
     public AutoNav() {
         autoNavState = AutoNavState.waiting;
@@ -30,8 +31,8 @@ public class AutoNav {
     }
 
     public void applyState(State state) {
-        if (state.autoDriveState == State.AutoDriveState.kAutoNavBlue) {
-        } else if (state.autoDriveState == State.AutoDriveState.kAutoNavRed) {
+        if (state.autoDriveState == State.AutoDriveState.kAutoNavBarrel) {
+        } else if (state.autoDriveState == State.AutoDriveState.kAutoNavSlamon) {
             switch (autoNavState) {
                 case waiting:
                     phaseInit(state);
@@ -52,6 +53,8 @@ public class AutoNav {
                 case finish:
                     break;
             }
+        }else if (state.autoDriveState == State.AutoDriveState.kAutoNavBounce) {
+            
         }
         //Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
     }

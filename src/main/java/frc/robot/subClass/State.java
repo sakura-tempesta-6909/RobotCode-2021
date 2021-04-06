@@ -151,10 +151,11 @@ public class State {
     }
 
     public enum AutoDriveState{
-        kAutoNavBlue,
+        kAutoNavBarrel,
         kGalacticSearchBlue,
-        kAutoNavRed,
+        kAutoNavSlamon,
         kGalacticSearchRed,
+        kAutoNavBounce,
         kAutoNavDoNothing,
         kGalacticSearchDoNothing
     }
