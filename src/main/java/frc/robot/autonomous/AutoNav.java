@@ -117,6 +117,7 @@ public class AutoNav {
                     autoNavState = AutoNavState.finish;
             }
         } else if (state.autoDriveState == State.AutoDriveState.kAutoNavSlamon) {
+        }else if (state.autoDriveState == State.AutoDriveState.kAutoNavBounce) {
             switch (autoNavState) {
                 case waiting:
                     phaseInit(state);
@@ -185,8 +186,6 @@ public class AutoNav {
                 case finish:
                     break;
             }
-        }else if (state.autoDriveState == State.AutoDriveState.kAutoNavBounce) {
-            
         }
         //Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
     }
