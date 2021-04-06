@@ -11,7 +11,7 @@ public class AutoNav {
     private int positionAchievementCount = 0,angleAchievementCount = 0;
     private double accumulator = 0;
     private boolean isAchievement = false;
-    
+
     private final double ThirtyInch = 30 * 2.54;
 
     public AutoNav() {
@@ -111,6 +111,7 @@ public class AutoNav {
                     PIDStraight(10*ThirtyInch, state);
                     break;
                 case finish:
+                default:
                     state.intakeState = State.IntakeState.doNothing;
                     state.intakeBeltState = State.IntakeBeltState.doNothing;
                     state.shooterState = State.ShooterState.doNothing;
@@ -123,18 +124,56 @@ public class AutoNav {
                     autoNavState = AutoNavState.phase1;
                     break;
                 case phase1:
-
+                    // E3まで
+                    PIDStraight(2*ThirtyInch, state);
                     break;
                 case phase2:
-
+                    PIDTurn(-90, state);
                     break;
                 case phase3:
+                    // C3まで
+                    PIDStraight(2*ThirtyInch, state);
                     break;
                 case phase4:
+                    PIDTurn(90, state);
                     break;
                 case phase5:
+                    // C9まで
+                    PIDStraight(6*ThirtyInch, state);
+                    break;
+                case phase6:
+                    PIDTurn(90, state);
+                    break;
+                case phase7:
+                    // E9まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase8:
+                    PIDTurn(-90, state);
+                    break;
+                case phase9:
+                    // E11まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase10:
+                    PIDTurn(-90, state);
+                    break;
+                case phase11:
+                    // C11まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase12:
+                    PIDTurn(-90, state);
+                case phase13:
+                    // C1まで 
+                    PIDStraight(10*ThirtyInch, state);
                     break;
                 case finish:
+                default:
+                    state.intakeState = State.IntakeState.doNothing;
+                    state.intakeBeltState = State.IntakeBeltState.doNothing;
+                    state.shooterState = State.ShooterState.doNothing;
+                    autoNavState = AutoNavState.finish;
                     break;
             }
         }else if (state.autoDriveState == State.AutoDriveState.kAutoNavBounce) {
