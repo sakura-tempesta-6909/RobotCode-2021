@@ -19,6 +19,11 @@ public class Util {
         SmartDashboard.putString(key, text);
     }
 
+    public static void sendConsole(String key, double number) {
+        System.out.println(key + ":" +number);
+        SmartDashboard.putNumber(key, number);
+    }
+
     /** 
      * 目標角度に合わせた重力オフセットを計算.
      * 
@@ -70,7 +75,7 @@ public class Util {
     }
 
     public static boolean isPositionAchievement(double driveRightPosition,double driveRightSetPosition,double driveLeftPosition,double driveLeftSetPosition,double threhold){
-        Util.sendConsole("subtract",Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveLeftSetPosition)))+"");
+        Util.sendConsole("subtract",Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveLeftSetPosition))));
         return Math.abs(Math.subtractExact(Math.round(driveRightPosition), Math.round(driveRightSetPosition))) < threhold && Math.abs(Math.subtractExact(Math.round(driveLeftPosition), Math.round(driveLeftSetPosition))) < threhold;
     }
 }

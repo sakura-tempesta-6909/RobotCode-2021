@@ -29,7 +29,7 @@ public class Drive extends DifferentialDrive {
                 setSpeed(state.driveStraightSpeed, state.driveRotateSpeed * 0.8);
                 break;
             case kStop :
-                stopMotor();
+                setSpeed(0,0);
                 break;
         }
     }

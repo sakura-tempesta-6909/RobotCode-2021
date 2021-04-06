@@ -18,13 +18,13 @@ public class AutoDrive {
     public void applyState(State state) {
         if (state.controlMode == State.ControlMode.m_Auto) {
             if (state.isResetPID){
-                leftMotor.config_kI(Const.kDriveTurnPIDLoopIdx,Const.kGains_AutoDriveTurn.kI);
-                rightMotor.config_kI(Const.kDriveTurnPIDLoopIdx,Const.kGains_AutoDriveTurn.kI);
+                leftMotor.setIntegralAccumulator(0);
+                rightMotor.setIntegralAccumulator(0);
                 state.isResetPID = false;
             }
             if(state.isTurn) {
-                leftMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 0);
-                rightMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 0);
+                leftMotor.selectProfileSlot(Const.kDriveTurnPIDLoopIdx, 0);
+                rightMotor.selectProfileSlot(Const.kDriveTurnPIDLoopIdx, 0);
             }else{
                 leftMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 1);
                 rightMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 1);
