@@ -11,7 +11,7 @@ public class AutoNav {
     private int positionAchievementCount = 0,angleAchievementCount = 0;
     private double accumulator = 0;
     private boolean isAchievement = false;
-
+    
     private final double ThirtyInch = 30 * 2.54;
 
     public AutoNav() {
@@ -33,6 +33,89 @@ public class AutoNav {
 
     public void applyState(State state) {
         if (state.autoDriveState == State.AutoDriveState.kAutoNavBarrel) {
+            switch (autoNavState) {
+                case waiting:
+                    phaseInit(state);
+                    autoNavState = AutoNavState.phase1;
+                    break;
+                case phase1:
+                    // C6まで
+                    PIDStraight(5*ThirtyInch, state);
+                    break;
+                case phase2:
+                    PIDTurn(90, state);
+                    break;
+                case phase3:
+                    // E6まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase4:
+                    PIDTurn(90, state);
+                    break;
+                case phase5:
+                    // E4まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase6:
+                    PIDTurn(90, state);
+                    break;
+                case phase7:
+                    // C4まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase8:
+                    PIDTurn(90, state);
+                    break;
+                case phase9:
+                    // C9まで
+                    PIDStraight(5 * ThirtyInch, state);
+                    break;
+                case phase10:
+                    PIDTurn(-90, state);
+                    break;
+                case phase11:
+                    // A9まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase12:
+                    PIDTurn(-90, state);
+                    break;
+                case phase13:
+                    // A7まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase14:
+                    PIDTurn(-90, state);
+                    break;
+                case phase15:
+                    // E7まで
+                    PIDStraight(4*ThirtyInch, state);
+                    break;
+                case phase16:
+                    PIDTurn(-90, state);
+                    break;
+                case phase17:
+                    // E11まで
+                    PIDStraight(4*ThirtyInch, state);
+                case phase18:
+                    PIDTurn(-90, state);
+                    break;
+                case phase19:
+                    // C11まで
+                    PIDStraight(2*ThirtyInch, state);
+                    break;
+                case phase20:
+                    PIDTurn(-90, state);
+                    break;
+                case phase21:
+                    PIDStraight(10*ThirtyInch, state);
+                    break;
+                case finish:
+                    state.intakeState = State.IntakeState.doNothing;
+                    state.intakeBeltState = State.IntakeBeltState.doNothing;
+                    state.shooterState = State.ShooterState.doNothing;
+                    autoNavState = AutoNavState.finish;
+            }
         } else if (state.autoDriveState == State.AutoDriveState.kAutoNavSlamon) {
             switch (autoNavState) {
                 case waiting:
@@ -77,6 +160,13 @@ public class AutoNav {
         phase12(12),
         phase13(13),
         phase14(14),
+        phase15(15),
+        phase16(16),
+        phase17(17),
+        phase18(18),
+        phase19(19),
+        phase20(20),
+        phase21(21),
         finish(-5);
         private final int id;
 
@@ -113,6 +203,9 @@ public class AutoNav {
         return angle;
     }
 
+    /**
+     * 右回りが正
+     */
     private void PIDTurn(int targetAngle, State state) {
         state.isTurn = true;
         accumulator += Math.max(-10000, Math.min(transformAngle(targetAngle-transformAngle(state.gyroAngle)), 10000));
