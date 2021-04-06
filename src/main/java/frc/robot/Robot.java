@@ -261,7 +261,7 @@ public class Robot extends TimedRobot {
         state.stateInit();
         state.controlMode = State.ControlMode.m_Auto;
         state.autoDriveState = State.AutoDriveState.kAutoNavDoNothing;
-        autoNav.autoNavStatus = AutoNav.AutoNavState.waiting;
+        autoNav.autoNavState = AutoNav.AutoNavState.waiting;
         arm.applyState(state);
         shooter.applyState(state);
         intake.applyState(state);
