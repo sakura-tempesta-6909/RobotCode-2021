@@ -11,7 +11,7 @@ public class AutoNav {
     private int positionAchievementCount = 0,angleAchievementCount = 0;
     private double accumulator = 0;
     private boolean isAchievement = false;
-
+    
     private final double ThirtyInch = 30 * 2.54;
 
     public AutoNav() {
