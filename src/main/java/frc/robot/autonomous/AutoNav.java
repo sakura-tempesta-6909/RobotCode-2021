@@ -177,7 +177,79 @@ public class AutoNav {
                     break;
             }
         }else if (state.autoDriveState == State.AutoDriveState.kAutoNavBounce) {
-            
+            switch (autoNavState) {
+                case waiting:
+                    phaseInit(state);
+                    autoNavState = AutoNavState.phase1;
+                    break;
+                case phase1:
+                    PIDStraight(2*ThirtyInch,state);
+                    break;
+                case phase2:
+                    PIDTurn(-90,state);
+                    break;
+                case phase3:
+                    PIDStraight(2*ThirtyInch,state);
+                    break;
+                case phase4:
+                    PIDTurn(180,state);
+                    break;
+                case phase5:
+                    PIDStraight(2*ThirtyInch,state);
+                    break;
+                case phase6:
+                    PIDTurn(-90,state);
+                    break;
+                case phase7:
+                    PIDStraight(1*ThirtyInch,state);
+                    break;
+                case phase8:
+                    PIDTurn(90, state);
+                    break;
+                case phase9:
+                    PIDStraight(2*ThirtyInch,state);
+                    break;
+                case phase10:
+                    PIDTurn(-90,state);
+                    break;
+                case phase11:
+                    PIDStraight(2*ThirtyInch,state);
+                    break;
+                case phase12:
+                    PIDTurn(-90,state);
+                    break;
+                case phase13:
+                    PIDStraight(4*ThirtyInch,state);
+                    break;
+                case phase14:
+                    PIDTurn(180,state);
+                    break;
+                case phase15:
+                    PIDStraight(4*ThirtyInch,state);
+                case phase16:
+                    PIDTurn(-90,state);
+                case phase17:
+                    PIDStraight(3*ThirtyInch,state);
+                case phase18:
+                    PIDTurn(-90,state);
+                case phase19:
+                    PIDStraight(4*ThirtyInch,state);
+                case phase20:
+                    PIDTurn(180,state);
+                case phase21:
+                    PIDStraight(2*ThirtyInch,state);
+                case phase22:
+                    PIDTurn(-90,state);
+                case phase23:
+                    PIDStraight(3*ThirtyInch,state);
+                case finish:
+                default:
+                    state.intakeState = State.IntakeState.doNothing;
+                    state.intakeBeltState = State.IntakeBeltState.doNothing;
+                    state.shooterState = State.ShooterState.doNothing;
+                    autoNavState = AutoNavState.finish;
+                    break;
+            }
         }
         //Util.sendConsole("AutoNavStatus", autoNavStatus.toString());
     }
@@ -206,6 +278,8 @@ public class AutoNav {
         phase19(19),
         phase20(20),
         phase21(21),
+        phase22(22),
+        phase23(23),
         finish(-5);
         private final int id;
 

@@ -30,14 +30,11 @@ public class AutoDrive {
                 rightMotor.selectProfileSlot(Const.kDriveStraightPIDLoopIdx, 1);
             }
             switch (state.autoDriveState){
-                case kAutoNavRed:
-                case kAutoNavBlue:
-                case kGalacticSearchRed:
-                case kGalacticSearchBlue:
-                    setPosition(state.driveLeftSetPosition,state.driveRightSetPosition);
-                    break;
                 case kGalacticSearchDoNothing:
                 case kAutoNavDoNothing:
+                    break;
+                default:
+                    setPosition(state.driveLeftSetPosition,state.driveRightSetPosition);
                     break;
             }
         }
