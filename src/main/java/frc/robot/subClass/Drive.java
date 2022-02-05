@@ -1,0 +1,47 @@
+package frc.robot.subClass;
+
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+
+public class Drive extends DifferentialDrive {
+
+    public Drive(MotorController leftMotor, MotorController rightMotor) {
+        super(leftMotor, rightMotor);
+    }
+
+    public void applyState(State state) {
+
+        switch (state.driveState) {
+            //パネル回転時の速さ
+            case kSuperLow :
+                setSpeed(state.driveStraightSpeed * 0.28, state.driveRotateSpeed * 0.7);
+                break;
+            //パネル回転の調整時の速さ
+            case kMiddleLow :
+                setSpeed(state.driveStraightSpeed * 0.4, state.driveRotateSpeed * 0.6);
+                break;
+            //クライム・シュートモード時の速さ
+            case kLow :
+                setSpeed(state.driveStraightSpeed * 0.6, state.driveRotateSpeed * 0.6);
+                break;
+            //ドライブモード時の速さ
+            case kManual :
+                setSpeed(state.driveStraightSpeed, state.driveRotateSpeed * 0.8);
+                break;
+            case kStop :
+                setSpeed(0,0);
+                break;
+        }
+    }
+
+    /**
+     * ドライブベースを動かす.
+     * 
+     * @param straightSpeed 真っ直ぐ進む成分(PercentOutput)[-1, 1]
+     * @param rotateSpeed 回転する成分(PercentOutput) [-1, 1]
+     */
+    public void setSpeed(double straightSpeed, double rotateSpeed) {
+        arcadeDrive(straightSpeed, rotateSpeed);
+    }
+
+}
