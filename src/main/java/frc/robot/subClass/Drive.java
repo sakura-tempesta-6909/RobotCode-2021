@@ -1,11 +1,11 @@
 package frc.robot.subClass;
 
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 public class Drive extends DifferentialDrive {
 
-    public Drive(SpeedController leftMotor, SpeedController rightMotor) {
+    public Drive(MotorController leftMotor, MotorController rightMotor) {
         super(leftMotor, rightMotor);
     }
 
